@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Dashboard</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+<div class="d-flex" style="min-height:100vh; background:#eef2f7;">
+
+    <!-- SIDEBAR -->
+    <div th:replace="fragments/admin-sidebar"></div>
+
+    <!-- MAIN CONTENT -->
+    <div class="flex-grow-1">
+
+        <!-- TOPBAR -->
+        <div th:replace="fragments/admin-header :: admin-header('Dashboard')"></div>
+
+        <!-- CONTENT -->
+        <div style="padding:25px;">
+            <!-- CARDS -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div style="background:white; padding:20px; border-radius:12px;">
+                        <small>Tổng người dùng</small>
+                        <h3>120</h3>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div style="background:white; padding:20px; border-radius:12px;">
+                        <small>Tổng chuyến đi</small>
+                        <h3>45</h3>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div style="background:white; padding:20px; border-radius:12px;">
+                        <small>Tổng vé</small>
+                        <h3>320</h3>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div style="background:white; padding:20px; border-radius:12px;">
+                        <small>Doanh thu</small>
+                        <h3>$12,000</h3>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TABLE -->
+            <div style="background:white; padding:20px; border-radius:12px;">
+
+                <div class="d-flex justify-content-between mb-3">
+                    <h5>Trips List</h5>
+                    <button class="btn btn-primary" style="border-radius:20px;">+ Add Trip</button>
+                </div>
+
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Route</th>
+                        <th>Bus</th>
+                        <th>Price</th>
+                        <th>Start</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>Hanoi - Hue</td>
+                        <td>Bus A</td>
+                        <td>$20</td>
+                        <td>2026-05-06</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary">Edit</button>
+                            <button class="btn btn-sm btn-outline-danger">Delete</button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <!-- PAGINATION -->
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    <small>Page 1 of 10</small>
+
+                    <ul class="pagination mb-0">
+                        <li class="page-item">
+                            <a class="page-link">Prev</a>
+                        </li>
+                        <li class="page-item active">
+                            <a class="page-link">1</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link">2</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link">Next</a>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+</body>
+</html>
