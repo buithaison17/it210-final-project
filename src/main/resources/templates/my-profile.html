@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Title</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+<div class="d-flex" style="min-height:100vh; background:#eef2f7;">
+
+    <!-- SIDEBAR -->
+    <div th:if="${session.user.role == T(com.example.it210finalproject.enums.Role).ADMIN}">
+        <div th:replace="fragments/admin-sidebar"></div>
+    </div>
+
+    <div th:if="${session.user.role == T(com.example.it210finalproject.enums.Role).STAFF}">
+        <div th:replace="fragments/staff-sidebar"></div>
+    </div>
+
+    <div th:if="${session.user.role == T(com.example.it210finalproject.enums.Role).PASSENGER}">
+        <div th:replace="fragments/passenger-sidebar"></div>
+    </div>
+
+    <!-- MAIN -->
+    <div class="flex-grow-1">
+
+        <!-- TOPBAR -->
+        <div th:replace="fragments/admin-header :: admin-header('Thông tin cá nhân')"></div>
+
+        <!-- CONTENT -->
+        <div style="padding:25px;">
+            <div style="background:white; padding:20px; border-radius:12px; max-width:800px; margin:auto;">
+                <div
+                        th:if="${success}"
+                        th:text="${success}"
+                        class="text-success-emphasis bg-success"
+                        style="padding:10px; border-radius:8px; text-align:center; margin-bottom:15px;">
+                </div>
+                <!-- FORM -->
+                <form th:action="@{/edit-profile}" method="post" th:object="${editProfileForm}">
+                    <!-- HEADER ACTION -->
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 style="margin:0;">Cập nhật thông tin</h5>
+                        <button type="submit" class="btn btn-primary" style="border-radius:20px;">
+                            Lưu thay đổi
+                        </button>
+                    </div>
+                    <div class="row">
+                        <!-- FULL NAME -->
+                        <div class="col-md-6 mb-3">
+                            <label for="fullName">Họ và tên</label>
+                            <input id="fullName" th:field="*{fullName}" type="text" class="form-control"
+                                   placeholder="Nhập họ và tên">
+                            <p th:if="*{#fields.hasErrors('fullName')}" th:errors="*{fullName}" class="text-danger"></p>
+                        </div>
+
+                        <!-- EMAIL -->
+                        <div class="col-md-6 mb-3">
+                            <label for="email">Email</label>
+                            <input id="email" th:field="*{email}" type="email" class="form-control"
+                                   placeholder="Nhập email">
+                            <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-danger"></p>
+                            <p th:if="${emailError}" th:text="${emailError}" class="text-danger"></p>
+                        </div>
+
+                        <!-- PHONE -->
+                        <div class="col-md-6 mb-3">
+                            <label for="phone">Số điện thoại</label>
+                            <input id="phone" th:field="*{phone}" type="text" class="form-control"
+                                   placeholder="Nhập số điện thoại">
+                            <p th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" class="text-danger"></p>
+                            <p th:if="${phoneError}" th:text="${phoneError}" class="text-danger"></p>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+</body>
+</html>

@@ -1,9 +1,9 @@
 package com.example.it210finalproject.service;
 
-import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.example.it210finalproject.enums.Role;
-import com.example.it210finalproject.exceptions.EmailDuplicateRegister;
-import com.example.it210finalproject.exceptions.PhoneDuplicateRegister;
+import com.example.it210finalproject.exceptions.EmailDuplicate;
+import com.example.it210finalproject.exceptions.PhoneDuplicate;
+import com.example.it210finalproject.model.dto.EditProfileForm;
 import com.example.it210finalproject.model.dto.LoginForm;
 import com.example.it210finalproject.model.dto.RegisterForm;
 import com.example.it210finalproject.model.entity.User;
@@ -32,13 +32,13 @@ public class UserService {
         );
     }
 
-    public void registerUser(RegisterForm registerForm) throws EmailDuplicateRegister, PhoneDuplicateRegister {
+    public void registerUser(RegisterForm registerForm) throws EmailDuplicate, PhoneDuplicate {
         // Kiểm tra email, số điện thoại
         if (userRepository.findByEmail(registerForm.getEmail()) != null) {
-            throw new EmailDuplicateRegister("Email đã tồn tại");
+            throw new EmailDuplicate("Email đã tồn tại");
         }
         if (userRepository.findByPhone(registerForm.getPhone()) != null) {
-            throw new PhoneDuplicateRegister("Số điện thoại đã tồn tại");
+            throw new PhoneDuplicate("Số điện thoại đã tồn tại");
         }
         // Mã khẩu mật khẩu
         registerForm.setPassword(bcryptPassword.bcrypt(registerForm.getPassword()));
@@ -58,5 +58,23 @@ public class UserService {
             return null;
         }
         return user;
+    }
+
+    public void updateProfile(User user, EditProfileForm form) throws EmailDuplicate, PhoneDuplicate {
+        // Kiểm tra email
+        User data = userRepository.findByEmail(form.getEmail());
+        if (data != null && !data.getId().equals(user.getId())) {
+            throw new EmailDuplicate("Email đã tồn tại");
+        }
+        // Kiểm tra số điện thoại
+        data = userRepository.findByPhone(form.getPhone());
+        if (data != null && !data.getId().equals(user.getId())) {
+            throw new PhoneDuplicate("Số điện thoại đã tồn tại");
+        }
+        // Luu người dùng
+        user.setFullName(form.getFullName());
+        user.setEmail(form.getEmail());
+        user.setPhone(form.getPhone());
+        userRepository.save(user);
     }
 }

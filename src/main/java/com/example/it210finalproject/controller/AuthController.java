@@ -1,8 +1,8 @@
 package com.example.it210finalproject.controller;
 
 import com.example.it210finalproject.enums.Role;
-import com.example.it210finalproject.exceptions.EmailDuplicateRegister;
-import com.example.it210finalproject.exceptions.PhoneDuplicateRegister;
+import com.example.it210finalproject.exceptions.EmailDuplicate;
+import com.example.it210finalproject.exceptions.PhoneDuplicate;
 import com.example.it210finalproject.model.dto.LoginForm;
 import com.example.it210finalproject.model.dto.RegisterForm;
 import com.example.it210finalproject.model.entity.User;
@@ -82,10 +82,10 @@ public class AuthController {
             userService.registerUser(registerForm);
             redirectAttributes.addFlashAttribute("success", "Đăng ký thành công");
             return "redirect:/login";
-        } catch (EmailDuplicateRegister emailDuplicateRegister) {
+        } catch (EmailDuplicate emailDuplicateRegister) {
             model.addAttribute("errorEmail", emailDuplicateRegister.getMessage());
             return "register";
-        } catch (PhoneDuplicateRegister phoneDuplicateRegister) {
+        } catch (PhoneDuplicate phoneDuplicateRegister) {
             model.addAttribute("errorPhone", phoneDuplicateRegister.getMessage());
             return "register";
         }

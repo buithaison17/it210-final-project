@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Title</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+<div class="d-flex" style="min-height:100vh; background:#eef2f7;">
+
+    <!-- SIDEBAR -->
+    <div th:replace="fragments/staff-sidebar"></div>
+
+    <!-- MAIN -->
+    <div class="flex-grow-1">
+
+        <!-- TOPBAR -->
+        <div th:replace="fragments/admin-header :: admin-header('Danh sách vé chờ thanh toán')"></div>
+
+        <!-- CONTENT -->
+        <div style="padding:25px;">
+
+            <!-- CARD -->
+            <div style="background:white; padding:20px; border-radius:12px;">
+
+                <!-- HEADER -->
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h6 style="margin:0;">Vé cần xử lý</h6>
+
+                    <input type="text"
+                           placeholder="Tìm mã vé / khách hàng..."
+                           class="form-control"
+                           style="width:250px; border-radius:20px;">
+                </div>
+
+                <!-- TABLE -->
+                <table class="table table-hover align-middle">
+                    <thead style="background:#f8f9fa;">
+                    <tr>
+                        <th>Mã vé</th>
+                        <th>Khách hàng</th>
+                        <th>Chuyến xe</th>
+                        <th>Giá tiền</th>
+                        <th>Trạng thái</th>
+                        <th>Thời gian đặt</th>
+                        <th style="text-align:center;">Hành động</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+
+                    <tr>
+                        <td>#T001</td>
+                        <td>Nguyễn Văn A</td>
+                        <td>Hà Nội → Hải Phòng</td>
+                        <td>150.000đ</td>
+                        <td>
+                            <span class="badge bg-warning text-dark">Chờ thanh toán</span>
+                        </td>
+                        <td>06/05/2026 14:20</td>
+                        <td style="text-align:center;">
+                            <button class="btn btn-sm btn-success" style="border-radius:15px;">
+                                Xác nhận
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger" style="border-radius:15px;">
+                                Hủy
+                            </button>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>#T002</td>
+                        <td>Trần Thị B</td>
+                        <td>Hà Nội → Đà Nẵng</td>
+                        <td>450.000đ</td>
+                        <td>
+                            <span class="badge bg-warning text-dark">Chờ thanh toán</span>
+                        </td>
+                        <td>06/05/2026 13:10</td>
+                        <td style="text-align:center;">
+                            <button class="btn btn-sm btn-success" style="border-radius:15px;">
+                                Xác nhận
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger" style="border-radius:15px;">
+                                Hủy
+                            </button>
+                        </td>
+                    </tr>
+
+                    </tbody>
+                </table>
+
+                <!-- PAGINATION -->
+                <div class="d-flex justify-content-between align-items-center mt-3">
+
+                    <small>Hiển thị 1 - 10 / 35 vé</small>
+
+                    <ul class="pagination mb-0">
+                        <li class="page-item"><a class="page-link">Trước</a></li>
+                        <li class="page-item active"><a class="page-link">1</a></li>
+                        <li class="page-item"><a class="page-link">2</a></li>
+                        <li class="page-item"><a class="page-link">3</a></li>
+                        <li class="page-item"><a class="page-link">Sau</a></li>
+                    </ul>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+</body>
+</html>

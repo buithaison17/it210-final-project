@@ -11,27 +11,18 @@
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
 <body>
-<div th:fragment="admin-sidebar" style="width:240px; height:100vh; background:#1e293b; color:white; padding:20px;">
-    <h4 style="font-weight:bold; margin-bottom:30px;">Admin Bus System</h4>
+<div th:fragment="passenger-sidebar" style="width:240px; height:100vh; background:#1e293b; color:white; padding:20px;">
+    <h4 style="font-weight:bold; margin-bottom:30px;">Bus Ticket Pro</h4>
 
     <ul style="list-style:none; padding:0;">
         <li style="margin-bottom:15px;">
-            <a th:href="@{/admin/dashboard}" style="color:white; text-decoration:none;">🏠 Dashboard</a>
+            <a th:href="@{/trips}" style="color:white; text-decoration:none;">🚌 Danh sách chuyến xe</a>
         </li>
         <li style="margin-bottom:15px;">
-            <a th:href="@{/admin/my-profile}" style="color:#cbd5f5; text-decoration:none;">👤 My Profile</a>
+            <a th:href="@{/tickets}" style="color:#cbd5f5; text-decoration:none;">🎫 Vé đã đặt</a>
         </li>
         <li style="margin-bottom:15px;">
-            <a th:href="@{/admin/trips}" style="color:#cbd5f5; text-decoration:none;">🚌 Trips</a>
-        </li>
-        <li style="margin-bottom:15px;">
-            <a th:href="@{/admin/tickets}" style="color:#cbd5f5; text-decoration:none;">🎫 Tickets</a>
-        </li>
-        <li style="margin-bottom:15px;">
-            <a th:href="@{/admin/buses}" style="color:#cbd5f5; text-decoration:none;">🚍 Buses</a>
-        </li>
-        <li style="margin-bottom:15px;">
-            <a th:href="@{/admin/routes}" style="color:#cbd5f5; text-decoration:none;">📍 Routes</a>
+            <a th:href="@{/my-profile}" style="color:#cbd5f5; text-decoration:none;">👤 Thông tin cá nhân</a>
         </li>
     </ul>
 </div>
