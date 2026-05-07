@@ -20,7 +20,7 @@
     <div class="flex-grow-1">
 
         <!-- TOPBAR -->
-        <div th:replace="fragments/admin-header :: admin-header('Buses Management')"></div>
+        <div th:replace="fragments/admin-header :: admin-header('Quản lý xe bus')"></div>
 
         <!-- CONTENT -->
         <div style="padding:25px;">
@@ -29,11 +29,17 @@
 
                 <!-- HEADER ACTION -->
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5 style="margin:0;">Buses List</h5>
+                    <h5 style="margin:0;">Danh sách xe bus</h5>
 
-                    <button class="btn btn-primary" style="border-radius:20px;">
-                        + Add Bus
-                    </button>
+                    <a th:href="@{/admin/add-bus}" class="btn btn-primary" style="border-radius:20px;">
+                        + Thêm xe bus
+                    </a>
+                </div>
+
+                <div th:if="${success}"
+                     th:text="${success}"
+                     class="text-success-emphasis bg-success"
+                     style="padding:10px; border-radius:8px; text-align:center; margin-bottom:15px;">
                 </div>
 
                 <!-- TABLE -->
@@ -42,62 +48,49 @@
                     <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Driver Name</th>
-                        <th>Company</th>
-                        <th>Total Seats</th>
+                        <th>Tài xế</th>
+                        <th>Công ty</th>
+                        <th>Biển số xe</th>
+                        <th>Tổng số ghế</th>
                         <th style="text-align:center;">Action</th>
                     </tr>
                     </thead>
-
                     <tbody>
-
-                    <tr>
-                        <td>1</td>
-                        <td>Nguyen Van A</td>
-                        <td>Phuong Trang</td>
-                        <td>40</td>
+                    <tr th:each="bus : ${buses}">
+                        <td th:text="${bus.id}"></td>
+                        <td th:text="${bus.driverName}"></td>
+                        <td th:text="${bus.plateNumber}"></td>
+                        <td th:text="${bus.company}"></td>
+                        <td th:text="${bus.totalSeats}"></td>
                         <td style="text-align:center;">
-                            <button class="btn btn-sm btn-outline-primary">Edit</button>
-                            <button class="btn btn-sm btn-outline-danger">Delete</button>
+                            <a th:href="@{/admin/edit-bus(busId=${bus.id})}"
+                               class="btn btn-sm btn-outline-primary">Edit</a>
+                            <a th:href="@{/admin/delete-bus(busId=${bus.id})}"
+                               class="btn btn-sm btn-outline-danger">Delete</a>
                         </td>
                     </tr>
-
-                    <tr>
-                        <td>2</td>
-                        <td>Tran Van B</td>
-                        <td>Mai Linh</td>
-                        <td>45</td>
-                        <td style="text-align:center;">
-                            <button class="btn btn-sm btn-outline-primary">Edit</button>
-                            <button class="btn btn-sm btn-outline-danger">Delete</button>
-                        </td>
-                    </tr>
-
                     </tbody>
 
                 </table>
-
                 <!-- PAGINATION -->
-                <div class="d-flex justify-content-between align-items-center mt-3">
+                <div th:if="${totalPages >= 1}" class="d-flex justify-content-end align-items-center mt-3">
 
-                    <small>Showing 1 to 10 of 25 buses</small>
 
                     <ul class="pagination mb-0">
 
                         <li class="page-item">
-                            <a class="page-link">Prev</a>
+                            <a th:href="@{/admin/buses(currentPage=${currentPage==1?1:currentPage - 1})}"
+                               class="page-link">Trang trước</a>
                         </li>
 
-                        <li class="page-item active">
-                            <a class="page-link">1</a>
+                        <li class="page-item" th:classappend="${currentPage == i ? 'active' : ''}"
+                            th:each="i : ${#numbers.sequence(1, totalPages)}">
+                            <a class="page-link" th:text="${i}" th:href="@{/admin/buses(currentPage=${i})}"></a>
                         </li>
 
                         <li class="page-item">
-                            <a class="page-link">2</a>
-                        </li>
-
-                        <li class="page-item">
-                            <a class="page-link">Next</a>
+                            <a th:href="@{/admin/buses(currentPage=${currentPage==totalPages?totalPages:currentPage + 1})}"
+                               class="page-link">Trang sau</a>
                         </li>
 
                     </ul>

@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Thêm xe bus</title>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+
+<body>
+
+<div class="d-flex" style="min-height:100vh; background:#eef2f7;">
+
+    <!-- SIDEBAR -->
+    <div th:replace="fragments/admin-sidebar"></div>
+
+    <!-- MAIN -->
+    <div class="flex-grow-1">
+
+        <!-- HEADER -->
+        <div th:replace="fragments/admin-header :: admin-header('Thêm xe bus')"></div>
+
+        <!-- CONTENT -->
+        <div style="padding:25px;">
+
+            <!-- CARD -->
+            <div style="background:white;
+                        border-radius:14px;
+                        padding:25px;
+                        box-shadow:0 2px 10px rgba(0,0,0,0.05);
+                        max-width:1000px;">
+
+                <!-- TOP -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+
+                    <div>
+                        <h4 style="margin:0; font-weight:600;">
+                            Thêm xe bus mới
+                        </h4>
+
+                        <small class="text-muted">
+                            Nhập thông tin xe bus vào hệ thống
+                        </small>
+                    </div>
+
+                    <a th:href="@{/admin/buses}"
+                       class="btn btn-outline-secondary"
+                       style="border-radius:20px; padding:8px 20px;">
+
+                        Quay lại
+                    </a>
+
+                </div>
+
+                <div
+                        th:if="${addBusError}"
+                        th:text="${addBusError}"
+                        style="background:#f8d7da; color:#842029; padding:10px; border-radius:8px; text-align:center; margin-bottom:15px;">
+                </div>
+
+                <!-- FORM -->
+                <form action="" method="post" th:object="${bus}">
+
+                    <div class="row">
+
+                        <!-- DRIVER -->
+                        <div class="col-md-6 mb-4">
+
+                            <label for="driverName" style="font-weight:500;">
+                                Tên tài xế
+                            </label>
+
+                            <input id="driverName" th:field="*{driverName}" type="text"
+                                   class="form-control"
+                                   placeholder="Nhập tên tài xế"
+                                   style="height:45px; border-radius:10px;">
+                            <p th:if="${#fields.hasErrors('driverName')}" th:errors="*{driverName}"
+                               class="text-danger"></p>
+                        </div>
+
+                        <!-- COMPANY -->
+                        <div class="col-md-6 mb-4">
+
+                            <label for="company" style="font-weight:500;">
+                                Nhà xe
+                            </label>
+
+                            <input id="company" th:field="*{company}" type="text"
+                                   class="form-control"
+                                   placeholder="Nhập tên nhà xe"
+                                   style="height:45px; border-radius:10px;">
+                            <p th:if="${#fields.hasErrors('company')}" th:errors="*{company}"
+                               class="text-danger"></p>
+                        </div>
+
+                        <!-- TOTAL SEATS -->
+                        <div class="col-md-6 mb-4">
+
+                            <label for="totalSeats" style="font-weight:500;">
+                                Tổng số ghế
+                            </label>
+
+                            <input id="totalSeats" th:field="*{totalSeats}" type="number"
+                                   class="form-control"
+                                   placeholder="Nhập tổng số ghế"
+                                   style="height:45px; border-radius:10px;">
+                            <p th:if="${#fields.hasErrors('totalSeats')}" th:errors="*{totalSeats}"
+                               class="text-danger"></p>
+                        </div>
+
+                        <!-- LICENSE PLATE -->
+                        <div class="col-md-6 mb-4">
+
+                            <label for="plateNumber" style="font-weight:500;">
+                                Biển số xe
+                            </label>
+
+                            <input id="plateNumber" th:field="*{plateNumber}" type="text"
+                                   class="form-control"
+                                   placeholder="VD: 30A-12345"
+                                   style="height:45px; border-radius:10px;">
+                            <p th:if="${#fields.hasErrors('plateNumber')}" th:errors="*{plateNumber}"
+                               class="text-danger"></p>
+                        </div>
+                    </div>
+
+                    <!-- BUTTON -->
+                    <div class="d-flex justify-content-end mt-2">
+
+                        <button type="submit"
+                                class="btn btn-primary"
+                                style="border-radius:20px;
+                                       padding:10px 30px;">
+
+                            Lưu xe bus
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- JS -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+</body>
+</html>

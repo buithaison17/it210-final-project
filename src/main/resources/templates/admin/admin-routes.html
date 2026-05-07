@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Title</title>
     <!-- Required meta tags -->
@@ -30,91 +30,47 @@
                 <!-- HEADER ACTION -->
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5 style="margin:0;">Routes List</h5>
-
-                    <button class="btn btn-primary" style="border-radius:20px;">
-                        + Add Route
-                    </button>
                 </div>
 
                 <!-- TABLE -->
                 <table class="table table-hover align-middle">
-
                     <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Origin</th>
-                        <th>Destination</th>
-                        <th>Distance (km)</th>
-                        <th style="text-align:center;">Action</th>
+                        <th>Điểm đi</th>
+                        <th>Điểm đến</th>
+                        <th>Khoảng cách (km)</th>
                     </tr>
                     </thead>
-
                     <tbody>
-
-                    <tr>
-                        <td>1</td>
-                        <td>Hà Nội</td>
-                        <td>Đà Nẵng</td>
-                        <td>780</td>
-                        <td style="text-align:center;">
-                            <button class="btn btn-sm btn-outline-primary">Edit</button>
-                            <button class="btn btn-sm btn-outline-danger">Delete</button>
-                        </td>
+                    <tr th:each="route : ${routes}">
+                        <td th:text="${route.id}"></td>
+                        <td th:text="${route.origin.name}"></td>
+                        <td th:text="${route.destination.name}"></td>
+                        <td th:text="${route.distance}"></td>
                     </tr>
-
-                    <tr>
-                        <td>2</td>
-                        <td>Hà Nội</td>
-                        <td>Hải Phòng</td>
-                        <td>120</td>
-                        <td style="text-align:center;">
-                            <button class="btn btn-sm btn-outline-primary">Edit</button>
-                            <button class="btn btn-sm btn-outline-danger">Delete</button>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>3</td>
-                        <td>Đà Nẵng</td>
-                        <td>Hồ Chí Minh</td>
-                        <td>960</td>
-                        <td style="text-align:center;">
-                            <button class="btn btn-sm btn-outline-primary">Edit</button>
-                            <button class="btn btn-sm btn-outline-danger">Delete</button>
-                        </td>
-                    </tr>
-
                     </tbody>
-
                 </table>
 
                 <!-- PAGINATION -->
-                <div class="d-flex justify-content-between align-items-center mt-3">
-
-                    <small>Showing 1 to 10 of 30 routes</small>
+                <div th:if="${totalPages >= 1}" class="d-flex justify-content-end align-items-center mt-3">
 
                     <ul class="pagination mb-0">
 
                         <li class="page-item">
-                            <a class="page-link">Prev</a>
+                            <a th:href="@{/admin/routes(currentPage=${currentPage == 1 ? 1 : currentPage - 1})}"
+                               class="page-link">Prev</a>
                         </li>
-
-                        <li class="page-item active">
-                            <a class="page-link">1</a>
+                        <li class="page-item" th:classappend="${currentPage == i ? 'active' : ''}"
+                            th:each="i : ${#numbers.sequence(1, totalPages)}">
+                            <a class="page-link" th:text="${i}" th:href="@{/admin/routes(currentPage=${i})}"></a>
                         </li>
-
                         <li class="page-item">
-                            <a class="page-link">2</a>
+                            <a th:href="@{/admin/routes(currentPage=${currentPage == totalPages ? totalPages : currentPage + 1})}"
+                               class="page-link">Next</a>
                         </li>
-
-                        <li class="page-item">
-                            <a class="page-link">Next</a>
-                        </li>
-
                     </ul>
-
                 </div>
-
             </div>
 
         </div>

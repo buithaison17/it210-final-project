@@ -3,6 +3,8 @@ package com.example.it210finalproject.model.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "buses")
 @AllArgsConstructor
@@ -21,4 +23,8 @@ public class Bus {
     private String company;
     @Column(name = "total_seats", nullable = false)
     private Integer totalSeats;
+    @Column(name = "plate_number", nullable = false)
+    public String plateNumber;
+    @OneToMany(mappedBy = "bus", fetch = FetchType.LAZY)
+    private List<Seat> seats;
 }

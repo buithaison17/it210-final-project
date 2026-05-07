@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Title</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+<div class="d-flex" style="min-height:100vh; background:#eef2f7;">
+
+    <!-- SIDEBAR -->
+    <div th:replace="fragments/admin-sidebar"></div>
+
+    <!-- MAIN -->
+    <div class="flex-grow-1">
+
+        <!-- HEADER -->
+        <div th:replace="fragments/admin-header :: admin-header('Thêm chuyến đi')"></div>
+
+        <!-- CONTENT -->
+        <div style="padding:25px;">
+
+            <!-- CARD -->
+            <div style="background:white;
+                        border-radius:14px;
+                        padding:25px;
+                        box-shadow:0 2px 10px rgba(0,0,0,0.05);
+                        max-width:1100px;">
+
+                <!-- TOP -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+
+                    <div>
+                        <h4 style="margin:0; font-weight:600;">
+                            Thêm chuyến đi mới
+                        </h4>
+
+                        <small class="text-muted">
+                            Nhập thông tin chuyến đi vào hệ thống
+                        </small>
+                    </div>
+
+                    <a th:href="@{/admin/trips}"
+                       class="btn btn-outline-secondary"
+                       style="border-radius:20px; padding:8px 20px;">
+
+                        Quay lại
+                    </a>
+
+                </div>
+
+                <!-- FORM -->
+                <form>
+
+                    <div class="row">
+
+                        <!-- ROUTE -->
+                        <div class="col-md-6 mb-4">
+
+                            <label style="font-weight:500;">
+                                Tuyến đường
+                            </label>
+
+                            <select class="form-control"
+                                    style="height:45px; border-radius:10px;">
+
+                                <option>
+                                    -- Chọn tuyến đường --
+                                </option>
+
+                                <option th:each="route : ${routes}" th:value="${route.id}"
+                                        th:text="${route.origin.name + '→' + route.destination.name}">
+                                </option>
+                            </select>
+
+                        </div>
+
+                        <!-- BUS -->
+                        <div class="col-md-6 mb-4">
+
+                            <label style="font-weight:500;">
+                                Xe bus
+                            </label>
+
+                            <select class="form-control"
+                                    style="height:45px; border-radius:10px;">
+
+                                <option>
+                                    -- Chọn xe bus --
+                                </option>
+
+                                <option th:each="bus : ${buses}" th:value="${bus.id}"
+                                        th:text="${bus.company + ' - ' + bus.plateNumber}">
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <!-- DEPARTURE -->
+                        <div class="col-md-6 mb-4">
+
+                            <label style="font-weight:500;">
+                                Thời gian khởi hành
+                            </label>
+
+                            <input type="datetime-local"
+                                   class="form-control"
+                                   style="height:45px; border-radius:10px;">
+
+                        </div>
+
+                        <!-- PRICE -->
+                        <div class="col-md-6 mb-4">
+
+                            <label style="font-weight:500;">
+                                Giá vé
+                            </label>
+
+                            <input type="number"
+                                   class="form-control"
+                                   placeholder="Nhập giá vé"
+                                   style="height:45px; border-radius:10px;">
+
+                        </div>
+
+                        <!-- STATUS -->
+                        <div class="col-md-6 mb-4">
+
+                            <label style="font-weight:500;">
+                                Trạng thái
+                            </label>
+
+                            <select class="form-control"
+                                    style="height:45px; border-radius:10px;">
+
+                                <option>
+                                    -- Chọn trạng thái --
+                                </option>
+
+                                <option>
+                                    Đang mở bán
+                                </option>
+
+                                <option>
+                                    Hết chỗ
+                                </option>
+
+                                <option>
+                                    Đã hủy
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+                    <!-- BUTTON -->
+                    <div class="d-flex justify-content-end mt-2">
+
+                        <button type="submit"
+                                class="btn btn-primary"
+                                style="border-radius:20px;
+                                       padding:10px 30px;">
+
+                            Lưu chuyến đi
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+</body>
+</html>
