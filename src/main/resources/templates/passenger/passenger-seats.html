@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Title</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+<div class="d-flex" style="min-height:100vh; background:#eef2f7;">
+
+    <!-- SIDEBAR USER -->
+    <div th:replace="fragments/passenger-sidebar"></div>
+
+    <!-- MAIN -->
+    <div class="flex-grow-1">
+
+        <!-- TOPBAR -->
+        <div th:replace="fragments/admin-header :: admin-header('Chọn ghế')"></div>
+
+        <!-- CONTENT -->
+        <div style="padding:25px;">
+
+            <!-- CARD -->
+            <div style="background:white; padding:20px; border-radius:12px;">
+
+                <!-- HEADER -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h6 style="margin:0;" th:text="${trip.bus.company + ' - ' + trip.bus.plateNumber}"></h6>
+                        <small class="text-muted">
+                            <span th:text="${trip.route.origin.name + ' → ' + trip.route.destination.name}"></span> |
+                            <span th:text="${#temporals.format(trip.startTime, 'HH:mm dd/MM/yyyy')}"></span>
+                        </small>
+                    </div>
+
+                    <div>
+                        <span style="margin-right:15px;">
+                            <span style="display:inline-block;width:15px;height:15px;background:#e2e8f0;border-radius:3px;"></span>
+                            Ghế trống
+                        </span>
+                        <span style="margin-right:15px;">
+                            <span style="display:inline-block;width:15px;height:15px;background:#3b82f6;border-radius:3px;"></span>
+                            Đang chọn
+                        </span>
+                        <span>
+                            <span style="display:inline-block;width:15px;height:15px;background:#ef4444;border-radius:3px;"></span>
+                            Đã đặt
+                        </span>
+                    </div>
+                </div>
+
+                <!-- BUS LAYOUT -->
+                <div style="display:flex; justify-content:center;">
+
+                    <div style="background:#f8fafc; padding:20px; border-radius:15px;">
+
+                        <!-- DRIVER -->
+                        <div style="text-align:center; margin-bottom:15px;">
+                            <div style="width:80px; margin:auto; background:#cbd5f5; padding:5px; border-radius:8px;">
+                                Tài xế
+                            </div>
+                        </div>
+
+                        <!-- SEATS GRID -->
+                        <div style="display:grid;
+                                    grid-template-columns: repeat(4, 60px);
+                                    gap:15px;
+                                    justify-content:center;">
+
+                            <!-- ROW 1 -->
+                            <div th:each="seat, stat : ${seats}"
+                                 class="seat-item"
+                                 th:data-id="${seat.id}"
+                                 th:data-index="${seat.seatNumber}"
+                                 th:data-status="${seat.status.name()}"
+                                 th:text="${stat.index + 1}"
+                                 th:style="'background:' +
+                                (${seat.status.name() == 'AVAILABLE'} ? '#e2e8f0' : '#ef4444') +
+                                '; height:45px; border-radius:8px; display:flex; align-items:center; justify-content:center;'">
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- FOOTER -->
+                <div class="d-flex justify-content-end align-items-center mt-4">
+                    <!-- INPUT HIDDEN -->
+                    <form method="post" th:action="@{/choose-seat}">
+                        <input type="hidden" name="tripId" th:value="${trip.id}">
+                        <input type="hidden" name="seatIds" id="seatIds">
+                        <button type="submit" onclick="submitSeats()" class="btn btn-primary"
+                                style="border-radius:20px; padding:10px 25px;">
+                            Tiếp tục thanh toán
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    // Mảng lưu ghế
+    let selectedSeats = [];
+
+    // Chọn ghế
+    document.querySelectorAll(".seat-item").forEach(item => {
+        item.addEventListener("click", () => {
+            // Lấy ID ghế và trạng thái
+            const seatId = item.getAttribute("data-id");
+            const seatStatus = item.getAttribute("data-status");
+            // Nếu ghế đã book thì không được chọn
+            if (seatStatus === 'BOOKED') return;
+            // Nếu ghế đẫ chọn
+            if (selectedSeats.includes(seatId)) {
+                // Bỏ chọn và đổi màu
+                item.style.background = '#e2e8f0';
+                selectedSeats = selectedSeats.filter(s => s !== seatId);
+            } else {
+                // Ghế chưa chọn thêm vào mảng và đổi màu
+                item.style.background = '#3b82f6';
+                selectedSeats.push(seatId);
+            }
+        })
+    })
+
+    function submitSeats() {
+        document.getElementById("seatIds").value = selectedSeats.join(",");
+    }
+</script>
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+</body>
+</html>

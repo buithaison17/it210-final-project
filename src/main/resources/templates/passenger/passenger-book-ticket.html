@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Title</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+<div class="d-flex" style="min-height:100vh; background:#eef2f7;">
+
+    <!-- SIDEBAR -->
+    <div th:replace="fragments/passenger-sidebar"></div>
+
+    <!-- MAIN -->
+    <div class="flex-grow-1">
+
+        <!-- HEADER -->
+        <div th:replace="fragments/admin-header :: admin-header('Xác nhận thanh toán')"></div>
+
+        <!-- CONTENT -->
+        <div style="padding:25px;">
+
+            <div style="background:white; padding:25px; border-radius:12px;">
+
+                <!-- THÔNG TIN CHUYẾN -->
+                <div class="mb-4">
+                    <h6 style="font-weight:600;">Thông tin chuyến xe</h6>
+
+                    <div style="background:#f8f9fa; padding:15px; border-radius:10px;">
+                        <p><strong>Nhà xe:</strong> <span th:text="${trip.bus.company}"></span> - <span
+                                th:text="${trip.bus.plateNumber}"></span></p>
+                        <p><strong>Tuyến:</strong> <span
+                                th:text="${trip.route.origin.name + ' - ' + trip.route.destination.name}"></span></p>
+                        <p><strong>Khởi hành:</strong> <span
+                                th:text="${#temporals.format(trip.startTime, 'HH:mm dd/MM/yyyy')}"></span></p>
+                    </div>
+                </div>
+
+                <!-- GHẾ -->
+                <div class="mb-4">
+                    <h6 style="font-weight:600;">Ghế đã chọn</h6>
+
+                    <div style="display:flex; gap:10px;">
+                        <div th:each="seat : ${seats}"
+                             th:text="${'Ghế ' + seat.seatNumber}"
+                             style="background:#3b82f6; color:white; padding:8px 15px; border-radius:8px;">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GIÁ -->
+                <div class="mb-4">
+                    <h6 style="font-weight:600;">Thanh toán</h6>
+
+                    <div style="background:#f8f9fa; padding:15px; border-radius:10px;">
+                        <p><strong>Giá vé:</strong> <span
+                                th:text="${#numbers.formatDecimal(trip.price, 0, 'COMMA', 0, 'POINT') + ' VND'}"></span>
+                        </p>
+                        <p><strong>Số lượng:</strong> <span th:text="${#lists.size(seats)}"></span></p>
+                        <h5 style="color:#ef4444;">Tổng tiền: <span
+                                th:text="${#numbers.formatDecimal(trip.price * #lists.size(seats), 0, 'COMMA', 0, 'POINT') + ' VND'}"></span>
+                        </h5>
+                    </div>
+                </div>
+
+                <!-- PHƯƠNG THỨC -->
+                <form th:action="@{/book-ticket}" method="post" class="mb-4">
+                    <h6 style="font-weight:600;">Phương thức thanh toán</h6>
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="payment">
+                        <label class="form-check-label">
+                            Thanh toán tại quầy
+                        </label>
+                    </div>
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="payment">
+                        <label class="form-check-label">
+                            Ví điện tử (Momo, ZaloPay)
+                        </label>
+                    </div>
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="payment">
+                        <label class="form-check-label">
+                            Thẻ ngân hàng
+                        </label>
+                    </div>
+                    <!-- BUTTON -->
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-success"
+                                style="border-radius:20px; padding:10px 25px;">
+                            Thanh toán
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+</body>
+</html>

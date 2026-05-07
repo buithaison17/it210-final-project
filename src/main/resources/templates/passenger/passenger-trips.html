@@ -44,9 +44,10 @@
                 <table class="table table-hover align-middle">
                     <thead style="background:#f8f9fa;">
                     <tr>
-                        <th>Mã chuyến</th>
+                        <th>STT</th>
+                        <th>Nhà xe</th>
                         <th>Tuyến đường</th>
-                        <th>Giờ khởi hành</th>
+                        <th>Khởi hành</th>
                         <th>Giá vé</th>
                         <th>Số ghế còn</th>
                         <th style="text-align:center;">Hành động</th>
@@ -55,42 +56,20 @@
 
                     <tbody>
 
-                    <tr>
-                        <td>TR001</td>
-                        <td>Hà Nội → Hải Phòng</td>
-                        <td>08:00 06/05/2026</td>
-                        <td>150.000đ</td>
-                        <td><span class="badge bg-success">12 ghế</span></td>
-                        <td style="text-align:center;">
-                            <button class="btn btn-sm btn-primary" style="border-radius:15px;">
-                                Đặt vé
-                            </button>
+                    <tr th:each="trip, index : ${trips}">
+                        <td th:text="${index.index+1}"></td>
+                        <td th:text="${trip.bus.company + ' - ' + trip.bus.plateNumber}"></td>
+                        <td th:text="${trip.route.origin.name + ' - ' + trip.route.destination.name}"></td>
+                        <td th:text="${#numbers.formatDecimal(trip.price, 0, 'POINT', 0, 'COMMA')+' VND'}"></td>
+                        <td th:text="${#temporals.format(trip.startTime, 'HH:mm dd/MM/yyyy')}"></td>
+                        <td>
+                            <span class="badge bg-success" th:text="${seats[index.index] + ' ghế'}"></span>
                         </td>
-                    </tr>
-
-                    <tr>
-                        <td>TR002</td>
-                        <td>Hà Nội → Đà Nẵng</td>
-                        <td>20:30 06/05/2026</td>
-                        <td>450.000đ</td>
-                        <td><span class="badge bg-warning text-dark">5 ghế</span></td>
                         <td style="text-align:center;">
-                            <button class="btn btn-sm btn-primary" style="border-radius:15px;">
+                            <a th:href="@{/choose-seat/{id}(id=${trip.id})}" class="btn btn-sm btn-primary"
+                               style="border-radius:15px;">
                                 Đặt vé
-                            </button>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>TR003</td>
-                        <td>Hà Nội → Nam Định</td>
-                        <td>14:00 06/05/2026</td>
-                        <td>80.000đ</td>
-                        <td><span class="badge bg-success">20 ghế</span></td>
-                        <td style="text-align:center;">
-                            <button class="btn btn-sm btn-primary" style="border-radius:15px;">
-                                Đặt vé
-                            </button>
+                            </a>
                         </td>
                     </tr>
 
@@ -98,16 +77,22 @@
                 </table>
 
                 <!-- PAGINATION -->
-                <div class="d-flex justify-content-between align-items-center mt-3">
+                <div class="d-flex justify-content-end align-items-center mt-3">
 
-                    <small>Hiển thị 1 - 10 / 25 chuyến xe</small>
 
                     <ul class="pagination mb-0">
-                        <li class="page-item"><a class="page-link">Trước</a></li>
-                        <li class="page-item active"><a class="page-link">1</a></li>
-                        <li class="page-item"><a class="page-link">2</a></li>
-                        <li class="page-item"><a class="page-link">3</a></li>
-                        <li class="page-item"><a class="page-link">Sau</a></li>
+                        <li class="page-item">
+                            <a th:href="@{/trips(currentPage=${currentPage - 1})}" class="page-link">Trang trước</a>
+                        </li>
+
+                        <li class="page-item" th:classappend="${currentPage == i ? 'active' : ''}"
+                            th:each="i : ${#numbers.sequence(1, totalPages)}">
+                            <a th:href="@{/trips(currentPage=${i})}" class="page-link" th:text="${i}"></a>
+                        </li>
+
+                        <li class="page-item">
+                            <a th:href="@{/trips(currentPage=${currentPage + 1})}" class="page-link">Trang sau</a>
+                        </li>
                     </ul>
 
                 </div>
