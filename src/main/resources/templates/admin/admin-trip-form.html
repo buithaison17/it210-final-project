@@ -36,8 +36,8 @@
                 <div class="d-flex justify-content-between align-items-center mb-4">
 
                     <div>
-                        <h4 style="margin:0; font-weight:600;">
-                            Thêm chuyến đi mới
+                        <h4 th:text="${trip.id != null ? 'Sửa chuyến đi' : 'Thêm chuyến đi'}"
+                            style="margin:0; font-weight:600;">
                         </h4>
 
                         <small class="text-muted">
@@ -55,108 +55,82 @@
                 </div>
 
                 <!-- FORM -->
-                <form>
+                <form th:action="@{/admin/add-trip(id=${trip.id})}" method="post" th:object="${trip}">
 
                     <div class="row">
 
                         <!-- ROUTE -->
                         <div class="col-md-6 mb-4">
 
-                            <label style="font-weight:500;">
+                            <label for="route" style="font-weight:500;">
                                 Tuyến đường
                             </label>
 
-                            <select class="form-control"
+                            <select id="route" th:field="*{routeId}" class="form-control"
                                     style="height:45px; border-radius:10px;">
 
-                                <option>
+                                <option value="">
                                     -- Chọn tuyến đường --
                                 </option>
 
-                                <option th:each="route : ${routes}" th:value="${route.id}"
+                                <option th:selected="${trip.routeId == route.id}" th:each="route : ${routes}"
+                                        th:value="${route.id}"
                                         th:text="${route.origin.name + '→' + route.destination.name}">
                                 </option>
                             </select>
-
+                            <p th:if="${#fields.hasErrors('routeId')}" th:errors="*{routeId}" class="text-danger"></p>
                         </div>
 
                         <!-- BUS -->
                         <div class="col-md-6 mb-4">
 
-                            <label style="font-weight:500;">
+                            <label for="bus" style="font-weight:500;">
                                 Xe bus
                             </label>
 
-                            <select class="form-control"
+                            <select id="bus" th:field="*{busId}" class="form-control"
                                     style="height:45px; border-radius:10px;">
 
-                                <option>
+                                <option value="">
                                     -- Chọn xe bus --
                                 </option>
 
-                                <option th:each="bus : ${buses}" th:value="${bus.id}"
+                                <option th:selected="${trip.busId == bus.id}" th:each="bus : ${buses}"
+                                        th:value="${bus.id}"
                                         th:text="${bus.company + ' - ' + bus.plateNumber}">
                                 </option>
 
                             </select>
-
+                            <p th:if="${#fields.hasErrors('busId')}" th:errors="*{busId}" class="text-danger"></p>
                         </div>
 
                         <!-- DEPARTURE -->
                         <div class="col-md-6 mb-4">
 
-                            <label style="font-weight:500;">
+                            <label for="start" style="font-weight:500;">
                                 Thời gian khởi hành
                             </label>
 
-                            <input type="datetime-local"
+                            <input id="start" th:field="*{startTime}" type="datetime-local"
                                    class="form-control"
                                    style="height:45px; border-radius:10px;">
-
+                            <p th:if="${#fields.hasErrors('startTime')}" th:errors="*{startTime}"
+                               class="text-danger"></p>
                         </div>
 
                         <!-- PRICE -->
                         <div class="col-md-6 mb-4">
 
-                            <label style="font-weight:500;">
+                            <label for="price" style="font-weight:500;">
                                 Giá vé
                             </label>
 
-                            <input type="number"
+                            <input id="price" th:field="*{price}" type="number"
                                    class="form-control"
                                    placeholder="Nhập giá vé"
                                    style="height:45px; border-radius:10px;">
-
-                        </div>
-
-                        <!-- STATUS -->
-                        <div class="col-md-6 mb-4">
-
-                            <label style="font-weight:500;">
-                                Trạng thái
-                            </label>
-
-                            <select class="form-control"
-                                    style="height:45px; border-radius:10px;">
-
-                                <option>
-                                    -- Chọn trạng thái --
-                                </option>
-
-                                <option>
-                                    Đang mở bán
-                                </option>
-
-                                <option>
-                                    Hết chỗ
-                                </option>
-
-                                <option>
-                                    Đã hủy
-                                </option>
-
-                            </select>
-
+                            <p th:if="${#fields.hasErrors('price')}" th:errors="*{price}"
+                               class="text-danger"></p>
                         </div>
 
                     </div>

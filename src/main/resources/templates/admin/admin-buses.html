@@ -63,10 +63,10 @@
                         <td th:text="${bus.company}"></td>
                         <td th:text="${bus.totalSeats}"></td>
                         <td style="text-align:center;">
-                            <a th:href="@{/admin/edit-bus(busId=${bus.id})}"
-                               class="btn btn-sm btn-outline-primary">Edit</a>
-                            <a th:href="@{/admin/delete-bus(busId=${bus.id})}"
-                               class="btn btn-sm btn-outline-danger">Delete</a>
+                            <a th:href="@{/admin/add-bus(id=${bus.id})}"
+                               class="btn btn-sm btn-outline-primary">Sửa</a>
+                            <a th:href="@{/admin/delete-bus(id=${bus.id})}"
+                               class="btn btn-sm btn-outline-danger">Xoá</a>
                         </td>
                     </tr>
                     </tbody>

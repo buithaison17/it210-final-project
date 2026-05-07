@@ -3,6 +3,7 @@ package com.example.it210finalproject.model.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -24,7 +25,9 @@ public class Bus {
     @Column(name = "total_seats", nullable = false)
     private Integer totalSeats;
     @Column(name = "plate_number", nullable = false)
-    public String plateNumber;
+    private String plateNumber;
     @OneToMany(mappedBy = "bus", fetch = FetchType.LAZY)
     private List<Seat> seats;
+    @Column(name = "created_at", nullable = false, columnDefinition = "DATETIME")
+    private LocalDateTime createdAt;
 }

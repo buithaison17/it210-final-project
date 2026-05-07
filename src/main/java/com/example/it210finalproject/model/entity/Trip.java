@@ -27,6 +27,7 @@ public class Trip {
     @Column(name = "price", nullable = false, columnDefinition = "decimal(10,2)")
     private Double price;
     @Column(name = "start_time", nullable = false, columnDefinition = "DATETIME")
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime startTime;
+    @Column(name = "created_at", nullable = false, columnDefinition = "DATETIME")
+    private LocalDateTime createdAt;
 }

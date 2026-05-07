@@ -45,6 +45,10 @@ public class BusService {
         return busRepository.findAll();
     }
 
+    public Bus findById(Long id) {
+        return busRepository.findById(id).orElse(null);
+    }
+
     @Transactional
     public void addBus(BusDTO busDTO) throws SQLException {
         // Thêm xe bus
@@ -61,5 +65,11 @@ public class BusService {
             seats.add(seat);
         }
         seatRepository.saveAll(seats);
+    }
+
+    public void updateBus(Long id, BusDTO busDTO) {
+        busDTO.setId(id);
+        Bus bus = mapToBus(busDTO);
+        busRepository.save(bus);
     }
 }

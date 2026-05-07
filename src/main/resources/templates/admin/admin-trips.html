@@ -20,7 +20,7 @@
     <div class="flex-grow-1">
 
         <!-- TOPBAR -->
-        <div th:replace="fragments/admin-header :: admin-header('Trips Management')"></div>
+        <div th:replace="fragments/admin-header :: admin-header('Quản lý chuyến xe')"></div>
 
         <!-- CONTENT -->
         <div style="padding:25px;">
@@ -29,20 +29,27 @@
 
                 <!-- HEADER ACTION -->
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5 style="margin:0;">Trips List</h5>
+                    <h5 style="margin:0;">Danh sách chuyến xe</h5>
 
                     <a th:href="@{/admin/add-trip}" class="btn btn-primary" style="border-radius:20px;">
                         + Thêm chuyến xe
                     </a>
                 </div>
 
+                <div
+                        th:if="${success}"
+                        th:text="${success}"
+                        class="text-success-emphasis bg-success"
+                        style="padding:10px; border-radius:8px; text-align:center; margin-bottom:15px;">
+                </div>
+
                 <!-- TABLE -->
                 <table class="table table-hover align-middle">
                     <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Tuyến đươờng</th>
-                        <th>Tên xe</th>
+                        <th>STT</th>
+                        <th>Nhà xe</th>
+                        <th>Tuyến đường</th>
                         <th>Giá vé</th>
                         <th>Thời gian khởi hành</th>
                         <th style="text-align:center;">Hành động</th>
@@ -51,58 +58,43 @@
 
                     <tbody>
 
-                    <tr>
-                        <td>1</td>
-                        <td>Hà Nội → Đà Nẵng</td>
-                        <td>Bus 29A-12345</td>
-                        <td>250,000đ</td>
-                        <td>2026-05-06 08:00</td>
+                    <tr th:each="trip, index : ${trips}">
+                        <td th:text="${index.index+1}"></td>
+                        <td th:text="${trip.bus.company + '-' + trip.bus.plateNumber}"></td>
+                        <td th:text="${trip.route.origin.name + ' -> ' + trip.route.destination.name}"></td>
+                        <td th:text="${#numbers.formatDecimal(trip.price, 1, 'POINT', 0, 'COMMA') + ' VND'}"></td>
+                        <td th:text="${#temporals.format(trip.startTime, 'HH:mm dd/MM/yyyy')}"></td>
                         <td style="text-align:center;">
-                            <button class="btn btn-sm btn-outline-primary">Edit</button>
-                            <button class="btn btn-sm btn-outline-danger">Delete</button>
+                            <a th:href="@{/admin/add-trip(id=${trip.id})}"
+                               class="btn btn-sm btn-outline-primary">Sửa</a>
+                            <a th:href="@{|/admin/delete-trip/${trip.id}|}"
+                               class="btn btn-sm btn-outline-danger">Xoá</a>
                         </td>
                     </tr>
-
-                    <tr>
-                        <td>2</td>
-                        <td>Hà Nội → Hải Phòng</td>
-                        <td>Bus 30B-99999</td>
-                        <td>120,000đ</td>
-                        <td>2026-05-06 09:30</td>
-                        <td style="text-align:center;">
-                            <button class="btn btn-sm btn-outline-primary">Edit</button>
-                            <button class="btn btn-sm btn-outline-danger">Delete</button>
-                        </td>
-                    </tr>
-
                     </tbody>
                 </table>
 
                 <!-- PAGINATION -->
-                <div class="d-flex justify-content-between align-items-center mt-3">
+                <div class="d-flex justify-content-end align-items-center mt-3">
 
-                    <small>Showing 1 to 10 of 50 trips</small>
 
                     <ul class="pagination mb-0">
 
                         <li class="page-item">
-                            <a class="page-link">Prev</a>
+                            <a th:href="@{/admin/trips(currentPage=${currentPage -1})}"
+                               class="page-link">Trang trước</a>
                         </li>
 
-                        <li class="page-item active">
-                            <a class="page-link">1</a>
+                        <li th:each=" i : ${#numbers.sequence(1, totalPages)}"
+                            th:classappend="${currentPage == i ? 'active' : ''}"
+                            class="page-item">
+                            <a class="page-link" th:text="${i}"></a>
                         </li>
 
-                        <li class="page-item">
-                            <a class="page-link">2</a>
-                        </li>
-
-                        <li class="page-item">
-                            <a class="page-link">3</a>
-                        </li>
 
                         <li class="page-item">
-                            <a class="page-link">Next</a>
+                            <a th:href="@{/admin/trips(currentPage=${currentPage+1})}"
+                               class="page-link">Trang sau</a>
                         </li>
 
                     </ul>
