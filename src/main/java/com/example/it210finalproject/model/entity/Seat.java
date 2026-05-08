@@ -24,6 +24,9 @@ public class Seat {
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
     private SeatStatus status;
+    @ManyToOne
+    @JoinColumn(name = "trip_id", referencedColumnName = "trip_id", nullable = false)
+    private Trip trip;
     @Version
     private Long version;
 }

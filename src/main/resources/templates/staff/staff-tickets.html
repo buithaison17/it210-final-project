@@ -53,16 +53,24 @@
                     </thead>
 
                     <tbody>
-
-                    <tr>
-                        <td>#T001</td>
-                        <td>Nguyễn Văn A</td>
-                        <td>Hà Nội → Hải Phòng</td>
-                        <td>150.000đ</td>
+                    <tr th:each="ticket : ${tickets}">
+                        <td th:text="${ticket.id}"></td>
+                        <td th:text="${ticket.user.fullName}"></td>
+                        <td><span th:text="${ticket.trip.route.origin.name}"></span> → <span
+                                th:text="${ticket.trip.route.destination.name}"></span></td>
+                        <td th:text="${#numbers.formatDecimal(ticket.price, 0, 'COMMA', 0, 'POINT') + ' VND'}"></td>
                         <td>
-                            <span class="badge bg-warning text-dark">Chờ thanh toán</span>
+                            <span th:if="${ticket.status.name() == 'PENDING'}"
+                                  th:text="'Chờ thanh toán'"
+                                  class="badge bg-warning"></span>
+                            <span th:if="${ticket.status.name() == 'PAID'}"
+                                  th:text="'Đã thanh toán'"
+                                  class="badge bg-success"></span>
+                            <span th:if="${ticket.status.name() == 'CANCELLED'}"
+                                  th:text="'Đã huỷ'"
+                                  class="badge bg-danger"></span>
                         </td>
-                        <td>06/05/2026 14:20</td>
+                        <td th:text="${#temporals.format(ticket.trip.startTime, 'HH:mm dd/MM/yyyy')}"></td>
                         <td style="text-align:center;">
                             <button class="btn btn-sm btn-success" style="border-radius:15px;">
                                 Xác nhận
@@ -72,26 +80,6 @@
                             </button>
                         </td>
                     </tr>
-
-                    <tr>
-                        <td>#T002</td>
-                        <td>Trần Thị B</td>
-                        <td>Hà Nội → Đà Nẵng</td>
-                        <td>450.000đ</td>
-                        <td>
-                            <span class="badge bg-warning text-dark">Chờ thanh toán</span>
-                        </td>
-                        <td>06/05/2026 13:10</td>
-                        <td style="text-align:center;">
-                            <button class="btn btn-sm btn-success" style="border-radius:15px;">
-                                Xác nhận
-                            </button>
-                            <button class="btn btn-sm btn-outline-danger" style="border-radius:15px;">
-                                Hủy
-                            </button>
-                        </td>
-                    </tr>
-
                     </tbody>
                 </table>
 

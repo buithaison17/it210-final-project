@@ -22,9 +22,9 @@ public class User {
     private String email;
     @Column(name = "password", nullable = false)
     private String password;
-    @Column(name = "phone", nullable = false, length = 10)
+    @Column(name = "phone", nullable = false, length = 10, unique = true)
     private String phone;
-    @Column(name = "role", nullable = false, unique = true)
+    @Column(name = "role", nullable = false)
     @Enumerated(EnumType.STRING)
     private Role role;
     @Column(name = "balance", nullable = false, columnDefinition = "DECIMAL(10, 2) CHECK (balance >= 0)")

@@ -60,9 +60,9 @@
                         <td th:text="${index.index+1}"></td>
                         <td th:text="${trip.bus.company + ' - ' + trip.bus.plateNumber}"></td>
                         <td th:text="${trip.route.origin.name + ' - ' + trip.route.destination.name}"></td>
-                        <td th:text="${#numbers.formatDecimal(trip.price, 0, 'POINT', 0, 'COMMA')+' VND'}"></td>
                         <td th:text="${#temporals.format(trip.startTime, 'HH:mm dd/MM/yyyy')}"></td>
-                        <td>
+                        <td th:text="${#numbers.formatDecimal(trip.price, 0, 'POINT', 0, 'COMMA')+' VND'}"></td>
+                        <td style="text-align:center;">
                             <span class="badge bg-success" th:text="${seats[index.index] + ' ghế'}"></span>
                         </td>
                         <td style="text-align:center;">

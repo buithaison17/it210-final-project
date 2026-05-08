@@ -1,7 +1,9 @@
 package com.example.it210finalproject.model.dto;
 
 import com.example.it210finalproject.validation.ConfirmPasswordValidate;
+import com.example.it210finalproject.validation.EmailDuplicate;
 import com.example.it210finalproject.validation.EmailFormat;
+import com.example.it210finalproject.validation.PhoneDuplicate;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
@@ -21,9 +23,11 @@ public class RegisterForm {
     private String fullName;
     @NotBlank(message = "Số điện thoại không được trống")
     @Pattern(regexp = "^[0-9]{10}$", message = "Số điện thoại không hợp lệ")
+    @PhoneDuplicate
     private String phone;
     @NotBlank(message = "Email không được trống")
     @EmailFormat
+    @EmailDuplicate
     private String email;
     @NotBlank(message = "Mật khẩu không được trống")
     @Length(min = 8, message = "Mật khẩu phải có ít nhất 8 ký tự")

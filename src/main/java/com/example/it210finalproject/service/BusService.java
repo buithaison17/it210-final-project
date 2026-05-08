@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,22 +55,21 @@ public class BusService {
         // Thêm xe bus
         Bus bus = mapToBus(busDTO);
         busRepository.save(bus);
-        // Tạo ghế ngồi
-        List<Seat> seats = new ArrayList<>();
-        for (int i = 0; i < bus.getTotalSeats(); i++) {
-            Seat seat = new Seat();
-            seat.setBus(bus);
-            String seatNumber = String.valueOf(i + 1);
-            seat.setSeatNumber(seatNumber.length() == 1 ? "0" + seatNumber : seatNumber);
-            seat.setStatus(SeatStatus.AVAILABLE);
-            seats.add(seat);
-        }
-        seatRepository.saveAll(seats);
     }
 
     public void updateBus(Long id, BusDTO busDTO) {
         busDTO.setId(id);
         Bus bus = mapToBus(busDTO);
         busRepository.save(bus);
+    }
+
+    public Bus findByPlateNumber(String plateNumber) {
+        return busRepository.findByPlateNumber(plateNumber);
+    }
+
+    @Transactional
+    public void deleteBus(Long busId) {
+        seatRepository.deleteByBusId(busId);
+        busRepository.deleteById(busId);
     }
 }

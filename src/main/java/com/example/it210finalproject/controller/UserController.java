@@ -1,7 +1,5 @@
 package com.example.it210finalproject.controller;
 
-import com.example.it210finalproject.exceptions.EmailDuplicate;
-import com.example.it210finalproject.exceptions.PhoneDuplicate;
 import com.example.it210finalproject.model.dto.EditProfileForm;
 import com.example.it210finalproject.model.entity.User;
 import com.example.it210finalproject.service.UserService;
@@ -35,19 +33,12 @@ public class UserController {
         }
         User user = (User) session.getAttribute("user");
         model.addAttribute("user", user);
-        try {
-            userService.updateProfile(user, editProfileForm);
-            redirectAttributes.addFlashAttribute("success", "Cập nhật thông tin thành công");
-            return switch (user.getRole()) {
-                case ADMIN -> "redirect:/admin/my-profile";
-                case STAFF -> "redirect:/staff/my-profile";
-                case PASSENGER -> "redirect:/my-profile";
-            };
-        } catch (EmailDuplicate emailDuplicate) {
-            model.addAttribute("emailError", "Email đã tồn tại");
-        } catch (PhoneDuplicate phoneDuplicate) {
-            model.addAttribute("phoneError", "Số điện thoại đã tồn tại");
-        }
-        return "my-profile";
+        userService.updateProfile(user, editProfileForm);
+        redirectAttributes.addFlashAttribute("success", "Cập nhật thông tin thành công");
+        return switch (user.getRole()) {
+            case ADMIN -> "redirect:/admin/my-profile";
+            case STAFF -> "redirect:/staff/my-profile";
+            case PASSENGER -> "redirect:/my-profile";
+        };
     }
 }

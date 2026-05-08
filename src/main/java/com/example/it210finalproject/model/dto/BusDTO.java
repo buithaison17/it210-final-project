@@ -1,15 +1,19 @@
 package com.example.it210finalproject.model.dto;
 
+import com.example.it210finalproject.validation.PlateNumberDuplicate;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.*;
+
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @Builder
+@PlateNumberDuplicate
 public class BusDTO {
     private Long id;
     @NotBlank(message = "Tên tài xế không được để trống")

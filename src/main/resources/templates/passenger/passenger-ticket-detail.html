@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Chi tiết vé</title>
+
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+
+<body style="background:#eef2f7;">
+
+<div class="d-flex" style="min-height:100vh;">
+
+    <!-- SIDEBAR -->
+    <div th:replace="fragments/passenger-sidebar"></div>
+
+    <!-- MAIN -->
+    <div class="flex-grow-1">
+
+        <!-- HEADER -->
+        <div th:replace="fragments/admin-header :: admin-header('Chi tiết vé')"></div>
+
+        <!-- CONTENT -->
+        <div style="padding:25px;">
+            <!-- RESULT CARD -->
+            <div style="
+                    background:white;
+                    border-radius:14px;
+                    padding:25px;
+                    box-shadow:0 2px 10px rgba(0,0,0,0.05);">
+
+                <!-- TOP -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+
+                    <div>
+                        <h5 style="margin:0; font-weight:600;">
+                            Thông tin vé
+                        </h5>
+
+                        <small class="text-muted">
+                            Chi tiết đầy đủ vé đã đặt
+                        </small>
+                    </div>
+
+                    <span th:if="${ticket.status.name() == 'PENDING'}"
+                          th:text="'Đang chờ'"
+                          class="badge bg-success"
+                          style="
+                            padding:10px 18px;
+                            font-size:14px;
+                            border-radius:20px;">
+                    </span>
+
+                    <span th:if="${ticket.status.name() == 'CANCELLED'}"
+                          th:text="'Đã huỷ'"
+                          class="badge bg-success"
+                          style="
+                            padding:10px 18px;
+                            font-size:14px;
+                            border-radius:20px;">
+                    </span>
+
+                    <span th:if="${ticket.status.name() == 'PAID'}"
+                          th:text="'Đã thanh toán'"
+                          class="badge bg-success"
+                          style="
+                            padding:10px 18px;
+                            font-size:14px;
+                            border-radius:20px;">
+                    </span>
+
+                </div>
+
+                <!-- INFO -->
+                <div class="row">
+
+                    <!-- LEFT -->
+                    <div class="col-md-6">
+
+                        <div style="
+                                background:#f8fafc;
+                                padding:20px;
+                                border-radius:12px;
+                                height:100%;">
+
+                            <h6 style="
+                                    font-weight:600;
+                                    margin-bottom:20px;">
+
+                                Thông tin hành trình
+                            </h6>
+
+                            <div class="mb-3">
+                                <small class="text-muted">Mã vé</small>
+                                <div th:text="${ticket.id}" style="font-weight:500;">
+
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <small class="text-muted">Tuyến đường</small>
+                                <div style="font-weight:500;">
+                                    <span th:text="${ticket.trip.route.origin.name}"></span> → <span
+                                        th:text="${ticket.trip.route.destination.name}"></span>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <small class="text-muted">Giờ khởi hành</small>
+                                <div th:text="${#temporals.format(ticket.trip.startTime, 'HH:mm - dd/MM/yyyy')}"
+                                     style="font-weight:500;">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- RIGHT -->
+                    <div class="col-md-6">
+                        <div style="
+                                background:#f8fafc;
+                                padding:20px;
+                                border-radius:12px;
+                                height:100%;">
+
+                            <h6 style="
+                                    font-weight:600;
+                                    margin-bottom:20px;">
+
+                                Thông tin xe & ghế
+                            </h6>
+
+                            <div class="mb-3">
+                                <small class="text-muted">Nhà xe</small>
+                                <div th:text="${ticket.trip.bus.company}" style="font-weight:500;">
+
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <small class="text-muted">Biển số xe</small>
+                                <div th:text="${ticket.trip.bus.plateNumber}" style="font-weight:500;">
+
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <small class="text-muted">Ghế đã đặt</small>
+
+                                <div class="d-flex flex-wrap">
+
+                                    <span th:text="${ticket.seat.seatNumber}" style="
+                                            background:#3b82f6;
+                                            color:white;
+                                            padding:6px 12px;
+                                            border-radius:8px;
+                                            margin-right:8px;
+                                            margin-bottom:8px;">
+
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                            <div class="mb-3">
+                                <small class="text-muted">Số điện thoại</small>
+                                <div th:text="${ticket.user.phone}" style="font-weight:500;">
+                                </div>
+                            </div>
+
+                            <div>
+                                <small class="text-muted">Tổng tiền</small>
+
+                                <div th:text="${#numbers.formatDecimal(ticket.price, 0, 'COMMA', 0, 'POINT') + ' VND'}"
+                                     style="
+                                        color:#2563eb;
+                                        font-size:24px;
+                                        font-weight:700;">
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- ACTION -->
+                <div class="d-flex justify-content-end mt-4">
+
+                    <a class="btn btn-outline-danger mr-2"
+                       th:href="@{/passenger/ticket/cancel/{ticketId}(ticketId=${ticket.id})}"
+                       style="border-radius: 20px; padding: 10px 20px;">
+
+                        Huỷ vé
+                    </a>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- JS -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+</body>
+</html>

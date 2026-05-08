@@ -1,8 +1,6 @@
 package com.example.it210finalproject.controller;
 
 import com.example.it210finalproject.enums.Role;
-import com.example.it210finalproject.exceptions.EmailDuplicate;
-import com.example.it210finalproject.exceptions.PhoneDuplicate;
 import com.example.it210finalproject.model.dto.LoginForm;
 import com.example.it210finalproject.model.dto.RegisterForm;
 import com.example.it210finalproject.model.entity.User;
@@ -72,23 +70,14 @@ public class AuthController {
     public String register(
             @Valid @ModelAttribute("registerForm") RegisterForm registerForm,
             BindingResult bindingResult,
-            RedirectAttributes redirectAttributes,
-            Model model
+            RedirectAttributes redirectAttributes
     ) {
         if (bindingResult.hasErrors()) {
             return "register";
         }
-        try {
-            userService.registerUser(registerForm);
-            redirectAttributes.addFlashAttribute("success", "Đăng ký thành công");
-            return "redirect:/login";
-        } catch (EmailDuplicate emailDuplicateRegister) {
-            model.addAttribute("errorEmail", emailDuplicateRegister.getMessage());
-            return "register";
-        } catch (PhoneDuplicate phoneDuplicateRegister) {
-            model.addAttribute("errorPhone", phoneDuplicateRegister.getMessage());
-            return "register";
-        }
+        userService.registerUser(registerForm);
+        redirectAttributes.addFlashAttribute("success", "Đăng ký thành công");
+        return "redirect:/login";
     }
 
     @GetMapping("/logout")

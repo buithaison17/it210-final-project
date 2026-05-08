@@ -116,6 +116,7 @@
                                    style="height:45px; border-radius:10px;">
                             <p th:if="${#fields.hasErrors('startTime')}" th:errors="*{startTime}"
                                class="text-danger"></p>
+                            <p th:if="${addTripError}" th:text="${addTripError}" class="text-danger"></p>
                         </div>
 
                         <!-- PRICE -->

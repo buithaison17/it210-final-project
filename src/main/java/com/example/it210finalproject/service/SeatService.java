@@ -28,7 +28,11 @@ public class SeatService {
         return seatRepository.findAllById(ids);
     }
 
-    public void updateStatusAll(List<Seat> seats) {
-        seatRepository.saveAll(seats);
+    public void updateStatus(Seat seat) {
+        seatRepository.save(seat);
+    }
+
+    public boolean existsByTripIdAndStatus(Long tripId, SeatStatus seatStatus) {
+        return seatRepository.existsByTripIdAndStatus(tripId, seatStatus);
     }
 }

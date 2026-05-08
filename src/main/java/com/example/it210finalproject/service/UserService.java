@@ -1,8 +1,6 @@
 package com.example.it210finalproject.service;
 
 import com.example.it210finalproject.enums.Role;
-import com.example.it210finalproject.exceptions.EmailDuplicate;
-import com.example.it210finalproject.exceptions.PhoneDuplicate;
 import com.example.it210finalproject.model.dto.EditProfileForm;
 import com.example.it210finalproject.model.dto.LoginForm;
 import com.example.it210finalproject.model.dto.RegisterForm;
@@ -32,14 +30,7 @@ public class UserService {
         );
     }
 
-    public void registerUser(RegisterForm registerForm) throws EmailDuplicate, PhoneDuplicate {
-        // Kiểm tra email, số điện thoại
-        if (userRepository.findByEmail(registerForm.getEmail()) != null) {
-            throw new EmailDuplicate("Email đã tồn tại");
-        }
-        if (userRepository.findByPhone(registerForm.getPhone()) != null) {
-            throw new PhoneDuplicate("Số điện thoại đã tồn tại");
-        }
+    public void registerUser(RegisterForm registerForm) {
         // Mã khẩu mật khẩu
         registerForm.setPassword(bcryptPassword.bcrypt(registerForm.getPassword()));
         // Lưu người dùng
@@ -60,21 +51,19 @@ public class UserService {
         return user;
     }
 
-    public void updateProfile(User user, EditProfileForm form) throws EmailDuplicate, PhoneDuplicate {
-        // Kiểm tra email
-        User data = userRepository.findByEmail(form.getEmail());
-        if (data != null && !data.getId().equals(user.getId())) {
-            throw new EmailDuplicate("Email đã tồn tại");
-        }
-        // Kiểm tra số điện thoại
-        data = userRepository.findByPhone(form.getPhone());
-        if (data != null && !data.getId().equals(user.getId())) {
-            throw new PhoneDuplicate("Số điện thoại đã tồn tại");
-        }
+    public void updateProfile(User user, EditProfileForm form) {
         // Luu người dùng
         user.setFullName(form.getFullName());
         user.setEmail(form.getEmail());
         user.setPhone(form.getPhone());
         userRepository.save(user);
+    }
+
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    public User findByPhone(String phone) {
+        return userRepository.findByPhone(phone);
     }
 }

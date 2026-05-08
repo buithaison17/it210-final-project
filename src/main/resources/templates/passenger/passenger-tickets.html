@@ -40,11 +40,14 @@
 
                 </div>
 
+                <div th:if="${success}" th:text="${success}" class="alert alert-success text-center"></div>
+
                 <!-- TABLE -->
                 <table class="table table-hover align-middle">
                     <thead style="background:#f8f9fa;">
                     <tr>
-                        <th>Mã vé</th>
+                        <th>STT</th>
+                        <th>Nhà xe</th>
                         <th>Tuyến xe</th>
                         <th>Giờ khởi hành</th>
                         <th>Giá vé</th>
@@ -55,68 +58,95 @@
 
                     <tbody>
 
-                    <tr>
-                        <td>TK001</td>
-                        <td>Hà Nội → Hải Phòng</td>
-                        <td>08:00 06/05/2026</td>
-                        <td>150.000đ</td>
-                        <td>
-                            <span class="badge bg-success">Đã thanh toán</span>
+                    <tr th:each="ticket, stat : ${tickets}">
+                        <td th:text="${stat.index+1}"></td>
+                        <td th:text="${ticket.trip.bus.company}"></td>
+                        <td th:text="${ticket.trip.route.origin.name + ' - ' + ticket.trip.route.destination.name}"></td>
+                        <td th:text="${#temporals.format(ticket.trip.startTime, 'HH:mm dd/MM/yyyy')}"></td>
+
+                        <td th:text="${#numbers.formatDecimal(ticket.price, 0, 'COMMA',0, 'POINT') + 'VND'}"></td>
+
+                        <td th:if="${ticket.status.name() == 'CANCELLED'}">
+                            <span th:text="'Đã huỷ'"
+                                  class="badge bg-danger"></span>
                         </td>
+
+                        <td th:if="${ticket.status.name() == 'PAID'}" style="text-align:left;">
+                            <span th:text="'Đã thanh toán'"
+                                  class="badge bg-success"></span>
+                        </td>
+
+                        <td th:if="${ticket.status.name() == 'PENDING'}" style="text-align:left;">
+                            <span th:text="'Đang chờ'" class="badge bg-warning text-dark"
+                                  style="border-radius:15px;">
+                            </span>
+                        </td>
+
                         <td style="text-align:center;">
-                            <button class="btn btn-sm btn-outline-primary" style="border-radius:15px;">
+                            <a th:href="@{/ticket/{id}(id=${ticket.id})}" class="btn btn-sm btn-outline-primary"
+                               style="border-radius:15px;">
                                 Xem chi tiết
-                            </button>
+                            </a>
+                            <a th:if="${ticket.status.name() == 'PENDING' || ticket.status.name() == 'PAID'}"
+                               th:href="@{/cancel-ticket(id=${ticket.id})}" class="btn btn-sm btn-outline-danger"
+                               style="border-radius:15px;">
+                                Huỷ vé
+                            </a>
                         </td>
                     </tr>
 
-                    <tr>
-                        <td>TK002</td>
-                        <td>Hà Nội → Đà Nẵng</td>
-                        <td>20:30 06/05/2026</td>
-                        <td>450.000đ</td>
-                        <td>
-                            <span class="badge bg-warning text-dark">Chờ thanh toán</span>
-                        </td>
-                        <td style="text-align:center;">
-                            <button class="btn btn-sm btn-success" style="border-radius:15px;">
-                                Thanh toán
-                            </button>
-                            <button class="btn btn-sm btn-outline-danger" style="border-radius:15px;">
-                                Hủy vé
-                            </button>
-                        </td>
-                    </tr>
+                    <!--                    <tr>-->
+                    <!--                        <td>TK002</td>-->
+                    <!--                        <td>Hà Nội → Đà Nẵng</td>-->
+                    <!--                        <td>20:30 06/05/2026</td>-->
+                    <!--                        <td>450.000đ</td>-->
+                    <!--                        <td>-->
+                    <!--                            <span class="badge bg-warning text-dark">Chờ thanh toán</span>-->
+                    <!--                        </td>-->
+                    <!--                        <td style="text-align:center;">-->
+                    <!--                            <button class="btn btn-sm btn-success" style="border-radius:15px;">-->
+                    <!--                                Thanh toán-->
+                    <!--                            </button>-->
+                    <!--                            <button class="btn btn-sm btn-outline-danger" style="border-radius:15px;">-->
+                    <!--                                Hủy vé-->
+                    <!--                            </button>-->
+                    <!--                        </td>-->
+                    <!--                    </tr>-->
 
-                    <tr>
-                        <td>TK003</td>
-                        <td>Hà Nội → Nam Định</td>
-                        <td>14:00 06/05/2026</td>
-                        <td>80.000đ</td>
-                        <td>
-                            <span class="badge bg-secondary">Đã huỷ</span>
-                        </td>
-                        <td style="text-align:center;">
-                            <button class="btn btn-sm btn-outline-primary" style="border-radius:15px;">
-                                Xem lại
-                            </button>
-                        </td>
-                    </tr>
+                    <!--                    <tr>-->
+                    <!--                        <td>TK003</td>-->
+                    <!--                        <td>Hà Nội → Nam Định</td>-->
+                    <!--                        <td>14:00 06/05/2026</td>-->
+                    <!--                        <td>80.000đ</td>-->
+                    <!--                        <td>-->
+                    <!--                            <span class="badge bg-secondary">Đã huỷ</span>-->
+                    <!--                        </td>-->
+                    <!--                        <td style="text-align:center;">-->
+                    <!--                            <button class="btn btn-sm btn-outline-primary" style="border-radius:15px;">-->
+                    <!--                                Xem lại-->
+                    <!--                            </button>-->
+                    <!--                        </td>-->
+                    <!--                    </tr>-->
 
                     </tbody>
                 </table>
 
                 <!-- PAGINATION -->
-                <div class="d-flex justify-content-between align-items-center mt-3">
+                <div class="d-flex justify-content-end align-items-center mt-3">
 
-                    <small>Hiển thị 1 - 10 / 18 vé</small>
 
                     <ul class="pagination mb-0">
-                        <li class="page-item"><a class="page-link">Trước</a></li>
-                        <li class="page-item active"><a class="page-link">1</a></li>
-                        <li class="page-item"><a class="page-link">2</a></li>
-                        <li class="page-item"><a class="page-link">3</a></li>
-                        <li class="page-item"><a class="page-link">Sau</a></li>
+                        <li class="page-item">
+                            <a th:href="@{/tickets(currentPage=${currentPage -1})}" class="page-link">Trang trước</a>
+                        </li>
+                        <li th:each="i : ${#numbers.sequence(1, totalPages)}"
+                            th:classappend="${currentPage == i ? 'active' : ''}"
+                            class="page-item">
+                            <a th:href="@{/tickets(currentPage=${i})}" class="page-link" th:text="${i}"></a>
+                        </li>
+                        <li class="page-item">
+                            <a th:href="@{/tickets(currentPage=${currentPage+1})}" class="page-link">Trang sau</a>
+                        </li>
                     </ul>
 
                 </div>

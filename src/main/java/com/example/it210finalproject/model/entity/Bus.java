@@ -2,6 +2,7 @@ package com.example.it210finalproject.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -29,5 +30,6 @@ public class Bus {
     @OneToMany(mappedBy = "bus", fetch = FetchType.LAZY)
     private List<Seat> seats;
     @Column(name = "created_at", nullable = false, columnDefinition = "DATETIME")
+    @CreationTimestamp
     private LocalDateTime createdAt;
 }

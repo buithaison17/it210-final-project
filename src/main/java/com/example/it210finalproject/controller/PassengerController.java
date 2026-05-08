@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -52,7 +51,19 @@ public class PassengerController {
     }
 
     @GetMapping("/tickets")
-    public String tickets() {
+    public String tickets(
+            Model model,
+            HttpSession session,
+            @RequestParam(value = "currentPage", defaultValue = "1") Integer currentPage
+    ) {
+        if (currentPage <= 0) return "redirect:/tickets?currentPage=1";
+        User user = (User) session.getAttribute("user");
+        Page<Ticket> tickets = ticketService.findByUser(user, currentPage, 5);
+        if (tickets.getTotalPages() > 0 && currentPage > tickets.getTotalPages())
+            return "redirect:/tickets?currentPage=" + tickets.getTotalPages();
+        model.addAttribute("tickets", tickets.getContent());
+        model.addAttribute("totalPages", tickets.getTotalPages());
+        model.addAttribute("currentPage", currentPage);
         return "passenger/passenger-tickets";
     }
 
@@ -92,23 +103,45 @@ public class PassengerController {
     }
 
     @PostMapping("/book-ticket")
-    public String bookTicket(HttpSession session) {
+    public String bookTicket(
+            HttpSession session,
+            @RequestParam(name = "payment") String payment
+    ) {
         User user = (User) session.getAttribute("user");
         Trip trip = (Trip) session.getAttribute("trip");
         List<Seat> seats = (List<Seat>) session.getAttribute("seats");
         List<Ticket> tickets = new ArrayList<>();
-        seats.forEach(seat -> {
-            Ticket ticket = Ticket.builder()
-                    .seat(seat)
-                    .trip(trip)
-                    .user(user)
-                    .status(TicketStatus.PENDING)
-                    .price(trip.getPrice())
-                    .createdAt(LocalDateTime.now())
-                    .build();
-            tickets.add(ticket);
-            seat.setStatus(SeatStatus.BOOKED);
-        });
+        // Thanh toán tại quầy
+        if (payment.equals("cash")) {
+            seats.forEach(seat -> {
+                Ticket ticket = Ticket.builder()
+                        .seat(seat)
+                        .trip(trip)
+                        .user(user)
+                        .status(TicketStatus.PENDING)
+                        .price(trip.getPrice())
+                        .createdAt(LocalDateTime.now())
+                        .build();
+                tickets.add(ticket);
+                seat.setTrip(trip);
+                seat.setStatus(SeatStatus.PENDING);
+            });
+            // Thanh toán online
+        } else {
+            seats.forEach(seat -> {
+                Ticket ticket = Ticket.builder()
+                        .seat(seat)
+                        .trip(trip)
+                        .user(user)
+                        .status(TicketStatus.PAID)
+                        .price(trip.getPrice())
+                        .createdAt(LocalDateTime.now())
+                        .build();
+                tickets.add(ticket);
+                seat.setTrip(trip);
+                seat.setStatus(SeatStatus.BOOKED);
+            });
+        }
         ticketService.saveAll(tickets, seats);
         return "redirect:/tickets";
     }
@@ -121,5 +154,15 @@ public class PassengerController {
         User user = (User) session.getAttribute("user");
         model.addAttribute("editProfileForm", new EditProfileForm(user.getFullName(), user.getEmail(), user.getPhone()));
         return "my-profile";
+    }
+
+    @GetMapping("/ticket/{id}")
+    public String search(
+            @PathVariable Long id,
+            Model model
+    ) {
+        Ticket ticket = ticketService.findById(id);
+        model.addAttribute("ticket", ticket);
+        return "passenger/passenger-ticket-detail";
     }
 }

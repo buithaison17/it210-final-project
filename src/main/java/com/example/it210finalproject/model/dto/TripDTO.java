@@ -1,8 +1,6 @@
 package com.example.it210finalproject.model.dto;
 
-import com.example.it210finalproject.model.entity.Bus;
-import com.example.it210finalproject.model.entity.Route;
-import jakarta.validation.constraints.FutureOrPresent;
+import com.example.it210finalproject.validation.StartTimeDuplicate;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.*;
@@ -15,6 +13,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Builder
+@StartTimeDuplicate(message = "Thời gian khởi hành bị trùng")
 public class TripDTO {
     private Long id;
     @NotNull(message = "Tuyến đường không được trống")
@@ -25,7 +24,6 @@ public class TripDTO {
     @Positive(message = "Giá vé không hợp lệ")
     private Double price;
     @NotNull(message = "Thời gian khởi hành không được trống")
-    @FutureOrPresent(message = "Thời gian khởi hành không hợp lệ")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime startTime;
 }

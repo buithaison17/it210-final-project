@@ -1,5 +1,6 @@
 package com.example.it210finalproject.controller;
 
+import com.example.it210finalproject.enums.SeatStatus;
 import com.example.it210finalproject.model.dto.BusDTO;
 import com.example.it210finalproject.model.dto.EditProfileForm;
 import com.example.it210finalproject.model.dto.TripDTO;
@@ -9,10 +10,11 @@ import com.example.it210finalproject.model.entity.Trip;
 import com.example.it210finalproject.model.entity.User;
 import com.example.it210finalproject.service.BusService;
 import com.example.it210finalproject.service.RouteService;
+import com.example.it210finalproject.service.SeatService;
 import com.example.it210finalproject.service.TripService;
-import com.example.it210finalproject.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,16 +27,12 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/admin")
+@AllArgsConstructor
 public class AdminController {
     private final RouteService routeService;
     private final BusService busService;
     private final TripService tripService;
-
-    public AdminController(RouteService routeService, BusService busService, TripService tripService) {
-        this.routeService = routeService;
-        this.busService = busService;
-        this.tripService = tripService;
-    }
+    private final SeatService seatService;
 
     @GetMapping({"", "/dashboard"})
     public String dashboard() {
@@ -118,6 +116,24 @@ public class AdminController {
         return "redirect:/admin/buses";
     }
 
+    @GetMapping("/delete-bus")
+    public String deleteBus(
+            @RequestParam("id") Long id,
+            RedirectAttributes redirectAttributes
+    ) {
+        // Kiểm tra xe có chuyến nào chưa
+        boolean trip = tripService.existsByBusId(id);
+        // Nếu có rồi thì không thể xoá
+        if (trip) {
+            redirectAttributes.addFlashAttribute("error", "Xe bus có chuyến đi, không thể xoá");
+            return "redirect:/admin/buses";
+        }
+        // Thực hiện xoá nếu không có chuyến nào
+        busService.deleteBus(id);
+        redirectAttributes.addFlashAttribute("success", "Xe bus đã được xoá thành công");
+        return "redirect:/admin/buses";
+    }
+
     @GetMapping("/routes")
     public String routes(
             Model model,
@@ -149,7 +165,7 @@ public class AdminController {
         if (currentPage <= 0) {
             return "redirect:/admin/trips?currentPage=1";
         }
-        Page<Trip> trips = tripService.findAll(currentPage, 10);
+        Page<Trip> trips = tripService.findAll(currentPage, 5);
         if (trips.getTotalPages() > 0 && currentPage > trips.getTotalPages()) {
             return "redirect:/admin/trips?currentPage=" + trips.getTotalPages();
         }
@@ -195,6 +211,7 @@ public class AdminController {
             model.addAttribute("buses", buses);
             return "admin/admin-trip-form";
         }
+
         if (id == null) {
             tripService.addTrip(tripDTO);
             redirectAttributes.addFlashAttribute("success", "Thêm chuyến xe thành công");
@@ -202,6 +219,26 @@ public class AdminController {
             tripService.updateTrip(id, tripDTO);
             redirectAttributes.addFlashAttribute("success", "Sửa chuyến xe thành công");
         }
+        return "redirect:/admin/trips";
+    }
+
+    @GetMapping("/delete-trip")
+    public String deleteTrip(
+            @RequestParam("id") Long id,
+            RedirectAttributes redirectAttributes
+    ) {
+        // Kiểm tra chuyến có ghế nào đã được đặt chưa
+        Trip trip = tripService.findById(id);
+        // Ghế đã thanh toán
+        boolean seatBooked = seatService.existsByTripIdAndStatus(trip.getBus().getId(), SeatStatus.BOOKED);
+        // Ghế chưa thanh toán
+        boolean seatPending = seatService.existsByTripIdAndStatus(trip.getBus().getId(), SeatStatus.PENDING);
+        if (seatBooked && seatPending) {
+            redirectAttributes.addFlashAttribute("error", "Xe bus có ghế đã được đặt, không thể xoá");
+            return "redirect:/admin/trips";
+        }
+        tripService.deleteById(id);
+        redirectAttributes.addFlashAttribute("success", "Xoá chuyến xe thành công");
         return "redirect:/admin/trips";
     }
 }
