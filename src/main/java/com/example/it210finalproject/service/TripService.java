@@ -1,6 +1,7 @@
 package com.example.it210finalproject.service;
 
 import com.example.it210finalproject.enums.SeatStatus;
+import com.example.it210finalproject.model.dto.Top5Trip;
 import com.example.it210finalproject.model.dto.TripDTO;
 import com.example.it210finalproject.model.entity.Seat;
 import com.example.it210finalproject.model.entity.Trip;
@@ -83,5 +84,9 @@ public class TripService {
 
     public void deleteById(Long id) {
         tripRepository.deleteById(id);
+    }
+
+    public List<Top5Trip> top5Trip() {
+        return tripRepository.top5Trip();
     }
 }

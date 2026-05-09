@@ -66,4 +66,8 @@ public class UserService {
     public User findByPhone(String phone) {
         return userRepository.findByPhone(phone);
     }
+
+    public long countAll() {
+        return userRepository.count();
+    }
 }

@@ -25,4 +25,8 @@ public class RouteService {
     public List<Route> findAll() {
         return routeRepository.findAll();
     }
+
+    public long countAll() {
+        return routeRepository.count();
+    }
 }

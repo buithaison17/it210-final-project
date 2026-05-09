@@ -2,6 +2,7 @@ package com.example.it210finalproject.service;
 
 import com.example.it210finalproject.enums.SeatStatus;
 import com.example.it210finalproject.enums.TicketStatus;
+import com.example.it210finalproject.model.dto.Top5User;
 import com.example.it210finalproject.model.entity.Seat;
 import com.example.it210finalproject.model.entity.Ticket;
 import com.example.it210finalproject.model.entity.Trip;
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @AllArgsConstructor
@@ -109,5 +111,17 @@ public class TicketService {
         // Lưu dữ liệu
         seatService.updateStatus(seat);
         ticketRepository.save(ticket);
+    }
+
+    public Double getRevenue() {
+        return ticketRepository.getRevenue();
+    }
+
+    public Integer countByStatus(TicketStatus ticketStatus) {
+        return ticketRepository.countByStatus(ticketStatus);
+    }
+
+    public List<Top5User> getTop5Users() {
+        return ticketRepository.getTop5Users(PageRequest.of(0, 5));
     }
 }

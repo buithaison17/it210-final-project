@@ -1,6 +1,7 @@
 package com.example.it210finalproject.controller;
 
 import com.example.it210finalproject.enums.SeatStatus;
+import com.example.it210finalproject.enums.TicketStatus;
 import com.example.it210finalproject.model.dto.BusDTO;
 import com.example.it210finalproject.model.dto.EditProfileForm;
 import com.example.it210finalproject.model.dto.TripDTO;
@@ -8,10 +9,7 @@ import com.example.it210finalproject.model.entity.Bus;
 import com.example.it210finalproject.model.entity.Route;
 import com.example.it210finalproject.model.entity.Trip;
 import com.example.it210finalproject.model.entity.User;
-import com.example.it210finalproject.service.BusService;
-import com.example.it210finalproject.service.RouteService;
-import com.example.it210finalproject.service.SeatService;
-import com.example.it210finalproject.service.TripService;
+import com.example.it210finalproject.service.*;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -33,9 +31,18 @@ public class AdminController {
     private final BusService busService;
     private final TripService tripService;
     private final SeatService seatService;
+    private final TicketService ticketService;
+    private final UserService userService;
 
     @GetMapping({"", "/dashboard"})
-    public String dashboard() {
+
+    public String dashboard(Model model) {
+        model.addAttribute("revenue", ticketService.getRevenue());
+        model.addAttribute("totalTicketPaid", ticketService.countByStatus(TicketStatus.PAID));
+        model.addAttribute("totalRoutes", routeService.countAll());
+        model.addAttribute("totalUsers", userService.countAll());
+        model.addAttribute("top5Trips", tripService.top5Trip());
+        model.addAttribute("top5Users", ticketService.getTop5Users());
         return "admin/admin-dashboard";
     }
 
