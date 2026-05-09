@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -105,44 +106,18 @@ public class PassengerController {
     @PostMapping("/book-ticket")
     public String bookTicket(
             HttpSession session,
-            @RequestParam(name = "payment") String payment
+            @RequestParam(name = "payment") String payment,
+            RedirectAttributes redirectAttributes
     ) {
+        if (payment == null || payment.isBlank()) {
+            redirectAttributes.addFlashAttribute("error", "Phương thức thanh toán không hợp lệ");
+            return "redirect:/book-ticket";
+        }
         User user = (User) session.getAttribute("user");
         Trip trip = (Trip) session.getAttribute("trip");
         List<Seat> seats = (List<Seat>) session.getAttribute("seats");
-        List<Ticket> tickets = new ArrayList<>();
-        // Thanh toán tại quầy
-        if (payment.equals("cash")) {
-            seats.forEach(seat -> {
-                Ticket ticket = Ticket.builder()
-                        .seat(seat)
-                        .trip(trip)
-                        .user(user)
-                        .status(TicketStatus.PENDING)
-                        .price(trip.getPrice())
-                        .createdAt(LocalDateTime.now())
-                        .build();
-                tickets.add(ticket);
-                seat.setTrip(trip);
-                seat.setStatus(SeatStatus.PENDING);
-            });
-            // Thanh toán online
-        } else {
-            seats.forEach(seat -> {
-                Ticket ticket = Ticket.builder()
-                        .seat(seat)
-                        .trip(trip)
-                        .user(user)
-                        .status(TicketStatus.PAID)
-                        .price(trip.getPrice())
-                        .createdAt(LocalDateTime.now())
-                        .build();
-                tickets.add(ticket);
-                seat.setTrip(trip);
-                seat.setStatus(SeatStatus.BOOKED);
-            });
-        }
-        ticketService.saveAll(tickets, seats);
+        ticketService.bookTicket(user, trip, seats, payment);
+        redirectAttributes.addFlashAttribute("success", "Đặt vé thành công");
         return "redirect:/tickets";
     }
 

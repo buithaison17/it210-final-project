@@ -92,10 +92,10 @@
                 <!-- FOOTER -->
                 <div class="d-flex justify-content-end align-items-center mt-4">
                     <!-- INPUT HIDDEN -->
-                    <form method="post" th:action="@{/choose-seat}">
+                    <form onsubmit="return submitSeats()" method="post" th:action="@{/choose-seat}">
                         <input type="hidden" name="tripId" th:value="${trip.id}">
                         <input type="hidden" name="seatIds" id="seatIds">
-                        <button type="submit" onclick="submitSeats()" class="btn btn-primary"
+                        <button class="btn btn-primary"
                                 style="border-radius:20px; padding:10px 25px;">
                             Tiếp tục thanh toán
                         </button>
@@ -116,7 +116,7 @@
             const seatId = item.getAttribute("data-id");
             const seatStatus = item.getAttribute("data-status");
             // Nếu ghế đã book thì không được chọn
-            if (seatStatus === 'BOOKED') return;
+            if (seatStatus === 'BOOKED' || seatStatus === 'PENDING') return;
             // Nếu ghế đẫ chọn
             if (selectedSeats.includes(seatId)) {
                 // Bỏ chọn và đổi màu
@@ -131,6 +131,11 @@
     })
 
     function submitSeats() {
+        // Chưa chọn ghế nào không cho thanh toán
+        if (selectedSeats.length === 0) {
+            alert("Vui lòng chọn ghế");
+            return false;
+        }
         document.getElementById("seatIds").value = selectedSeats.join(",");
     }
 </script>

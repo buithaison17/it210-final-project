@@ -4,6 +4,7 @@ import com.example.it210finalproject.enums.SeatStatus;
 import com.example.it210finalproject.enums.TicketStatus;
 import com.example.it210finalproject.model.entity.Seat;
 import com.example.it210finalproject.model.entity.Ticket;
+import com.example.it210finalproject.model.entity.Trip;
 import com.example.it210finalproject.model.entity.User;
 import com.example.it210finalproject.repository.SeatRepository;
 import com.example.it210finalproject.repository.TicketRepository;
@@ -15,6 +16,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -47,6 +50,53 @@ public class TicketService {
     public Page<Ticket> findByStatus(Integer currentPage, Integer perPage, TicketStatus ticketStatus) {
         Pageable pageable = PageRequest.of(currentPage - 1, perPage, Sort.by("createdAt").descending());
         return ticketRepository.findByStatus(TicketStatus.PENDING, pageable);
+    }
+
+    @Transactional
+    public void bookTicket(User user, Trip trip, List<Seat> seats, String methodPayment) {
+        // Thanh toán tiền mặt
+        List<Ticket> tickets = new ArrayList<>();
+        if (methodPayment.equals("cash")) {
+            seats.forEach(seat -> {
+                Ticket ticket = Ticket.builder()
+                        .seat(seat)
+                        .trip(trip)
+                        .user(user)
+                        .status(TicketStatus.PENDING)
+                        .price(trip.getPrice())
+                        .createdAt(LocalDateTime.now())
+                        .build();
+                tickets.add(ticket);
+                seat.setTrip(trip);
+                seat.setStatus(SeatStatus.PENDING);
+            });
+        } else {
+            seats.forEach(seat -> {
+                Ticket ticket = Ticket.builder()
+                        .seat(seat)
+                        .trip(trip)
+                        .user(user)
+                        .status(TicketStatus.PAID)
+                        .price(trip.getPrice())
+                        .createdAt(LocalDateTime.now())
+                        .build();
+                tickets.add(ticket);
+                seat.setTrip(trip);
+                seat.setStatus(SeatStatus.BOOKED);
+            });
+        }
+
+        ticketRepository.saveAll(tickets);
+        seatRepository.saveAll(seats);
+    }
+
+    @Transactional
+    public void confirmTicket(Ticket ticket) {
+        ticket.setStatus(TicketStatus.PAID);
+        Seat seat = ticket.getSeat();
+        seat.setStatus(SeatStatus.BOOKED);
+        ticketRepository.save(ticket);
+        seatRepository.save(seat);
     }
 
     @Transactional

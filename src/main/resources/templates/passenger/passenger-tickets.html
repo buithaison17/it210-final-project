@@ -87,7 +87,8 @@
                                style="border-radius:15px;">
                                 Xem chi tiết
                             </a>
-                            <a th:if="${ticket.status.name() == 'PENDING' || ticket.status.name() == 'PAID'}"
+                            <a onclick="return confirm('Bạn có chắc chắn muốn huỷ vé?')"
+                               th:if="${ticket.status.name() == 'PENDING' || ticket.status.name() == 'PAID'}"
                                th:href="@{/cancel-ticket(id=${ticket.id})}" class="btn btn-sm btn-outline-danger"
                                style="border-radius:15px;">
                                 Huỷ vé

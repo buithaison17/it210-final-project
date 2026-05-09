@@ -49,16 +49,16 @@
 
                     <span th:if="${ticket.status.name() == 'PENDING'}"
                           th:text="'Đang chờ'"
-                          class="badge bg-success"
+                          class="badge bg-warning text-light"
                           style="
-                            padding:10px 18px;
-                            font-size:14px;
-                            border-radius:20px;">
-                    </span>
+                                padding:10px 18px;
+                                font-size:14px;
+                                border-radius:20px;">
+                        </span>
 
                     <span th:if="${ticket.status.name() == 'CANCELLED'}"
                           th:text="'Đã huỷ'"
-                          class="badge bg-success"
+                          class="badge bg-danger text-light"
                           style="
                             padding:10px 18px;
                             font-size:14px;
@@ -67,7 +67,7 @@
 
                     <span th:if="${ticket.status.name() == 'PAID'}"
                           th:text="'Đã thanh toán'"
-                          class="badge bg-success"
+                          class="badge bg-success text-light"
                           style="
                             padding:10px 18px;
                             font-size:14px;
@@ -192,10 +192,11 @@
                 </div>
 
                 <!-- ACTION -->
-                <div class="d-flex justify-content-end mt-4">
+                <div th:if="${ticket.status.name() != 'CANCELLED'}" class="d-flex justify-content-end mt-4">
 
-                    <a class="btn btn-outline-danger mr-2"
-                       th:href="@{/passenger/ticket/cancel/{ticketId}(ticketId=${ticket.id})}"
+                    <a onclick="return confirm('Bạn có chắc chắn muốn huỷ vé?')"
+                       class="btn btn-outline-danger mr-2"
+                       th:href="@{/cancel-ticket(id=${ticket.id})}"
                        style="border-radius: 20px; padding: 10px 20px;">
 
                         Huỷ vé

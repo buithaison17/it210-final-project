@@ -69,7 +69,8 @@
                 </div>
 
                 <!-- PHƯƠNG THỨC -->
-                <form th:action="@{/book-ticket}" method="post" class="mb-4">
+                <form onsubmit="return submitForm()"
+                      th:action="@{/book-ticket}" method="post" class="mb-4">
                     <h6 style="font-weight:600;">Phương thức thanh toán</h6>
 
                     <div class="form-check">
@@ -108,6 +109,22 @@
     </div>
 
 </div>
+<script>
+    let payment = "";
+    document.querySelectorAll('input[name="payment"]').forEach(radio => {
+        radio.addEventListener('change', () => {
+            payment = radio.value;
+        });
+    });
+
+    function submitForm() {
+        if (payment.length === 0) {
+            alert("Vui lòng chọn phương thức thanh toán");
+            return false;
+        }
+    }
+
+</script>
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"

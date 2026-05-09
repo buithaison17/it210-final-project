@@ -38,6 +38,8 @@
                            style="width:250px; border-radius:20px;">
                 </div>
 
+                <div th:if="${success}" th:text="${success}" class="alert alert-success text-center"></div>
+
                 <!-- TABLE -->
                 <table class="table table-hover align-middle">
                     <thead style="background:#f8f9fa;">
@@ -72,35 +74,42 @@
                         </td>
                         <td th:text="${#temporals.format(ticket.trip.startTime, 'HH:mm dd/MM/yyyy')}"></td>
                         <td style="text-align:center;">
-                            <button class="btn btn-sm btn-success" style="border-radius:15px;">
+                            <a th:href="@{/confirm-ticket(id=${ticket.id})}"
+                               th:if="${ticket.status.name() == 'PENDING'}"
+                               class="btn btn-sm btn-success" style="border-radius:15px;">
                                 Xác nhận
-                            </button>
-                            <button class="btn btn-sm btn-outline-danger" style="border-radius:15px;">
+                            </a>
+                            <a th:if="${ticket.status.name() != 'CANCELLED'}"
+                               th:href="@{/cancel-ticket(id=${ticket.id})}"
+                               onclick="return confirm('Bạn có chắc chắn muốn huỷ vé này?')"
+                               class="btn btn-sm btn-outline-danger" style="border-radius:15px;">
                                 Hủy
-                            </button>
+                            </a>
                         </td>
                     </tr>
                     </tbody>
                 </table>
 
                 <!-- PAGINATION -->
-                <div class="d-flex justify-content-between align-items-center mt-3">
-
-                    <small>Hiển thị 1 - 10 / 35 vé</small>
-
+                <div class="d-flex justify-content-end align-items-center mt-3">
                     <ul class="pagination mb-0">
-                        <li class="page-item"><a class="page-link">Trước</a></li>
-                        <li class="page-item active"><a class="page-link">1</a></li>
-                        <li class="page-item"><a class="page-link">2</a></li>
-                        <li class="page-item"><a class="page-link">3</a></li>
-                        <li class="page-item"><a class="page-link">Sau</a></li>
+                        <li class="page-item">
+                            <a th:href="@{/staff/tickets(currentPage=${currentPage - 1})}" class="page-link">Trước</a>
+                        </li>
+
+                        <li th:each="i : ${#numbers.sequence(1, totalPages)}"
+                            th:classappend="${currentPage == i ? 'active' : ''}"
+                            class="page-item">
+                            <a th:href="@{/staff/tickets(currentPage=${i})}" class="page-link" th:text="${i}"></a>
+                        </li>
+
+                        <li class="page-item">
+                            <a th:href="@{/staff/tickets(currentPage=${currentPage + 1})}" class="page-link">Sau</a>
+                        </li>
                     </ul>
-
                 </div>
-
             </div>
         </div>
-
     </div>
 </div>
 <!-- Optional JavaScript -->
