@@ -4,10 +4,7 @@ import com.example.it210finalproject.enums.SeatStatus;
 import com.example.it210finalproject.enums.TicketStatus;
 import com.example.it210finalproject.model.dto.EditProfileForm;
 import com.example.it210finalproject.model.entity.*;
-import com.example.it210finalproject.service.LocationService;
-import com.example.it210finalproject.service.SeatService;
-import com.example.it210finalproject.service.TicketService;
-import com.example.it210finalproject.service.TripService;
+import com.example.it210finalproject.service.*;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -74,25 +71,36 @@ public class PassengerController {
     public String tickets(
             Model model,
             HttpSession session,
-            @RequestParam(value = "currentPage", defaultValue = "1") Integer currentPage
+            @RequestParam(value = "currentPage", defaultValue = "1") Integer currentPage,
+            @RequestParam(name = "search", defaultValue = "") Long id
     ) {
-        if (currentPage <= 0) return "redirect:/tickets?currentPage=1";
+        if (currentPage <= 0) return "redirect:/tickets?currentPage=1"
+                + (id == null ? "" : "&search=" + id);
         User user = (User) session.getAttribute("user");
-        Page<Ticket> tickets = ticketService.findByUser(user, currentPage, 5);
+        Page<Ticket> tickets = ticketService.findByUser(user, id, currentPage, 5);
         if (tickets.getTotalPages() > 0 && currentPage > tickets.getTotalPages())
-            return "redirect:/tickets?currentPage=" + tickets.getTotalPages();
+            return "redirect:/tickets?currentPage=" + tickets.getTotalPages()
+                    + (id == null ? "" : "&search=" + id);
         model.addAttribute("tickets", tickets.getContent());
         model.addAttribute("totalPages", tickets.getTotalPages());
         model.addAttribute("currentPage", currentPage);
+        model.addAttribute("search", id);
         return "passenger/passenger-tickets";
     }
 
     @GetMapping("/choose-seat/{id}")
     public String seats(
             @PathVariable Long id,
-            Model model
+            Model model,
+            RedirectAttributes redirectAttributes
     ) {
         Trip trip = tripService.findById(id);
+        // Kiểm tra đã quá hạn chưa
+        LocalDateTime now = LocalDateTime.now();
+        if (trip.getStartTime().isBefore(now)) {
+            redirectAttributes.addFlashAttribute("error", "Chuyến đi đã diễn ra");
+            return "redirect:/trips";
+        }
         List<Seat> seats = seatService.findByBusId(trip.getBus().getId());
         model.addAttribute("trip", trip);
         model.addAttribute("seats", seats);

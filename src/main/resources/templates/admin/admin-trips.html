@@ -29,11 +29,38 @@
 
                 <!-- HEADER ACTION -->
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5 style="margin:0;">Danh sách chuyến xe</h5>
-
                     <a th:href="@{/admin/add-trip}" class="btn btn-primary" style="border-radius:20px;">
                         + Thêm chuyến xe
                     </a>
+
+                    <form th:action="@{/admin/trips}" onsubmit="return submitForm()" method="get"
+                          class="d-flex align-items-center">
+                        <select name="pickUp" id="pickUp" class="form-control mr-3">
+                            <option value="">Điểm đón</option>
+                            <option th:each="location : ${locations}"
+                                    th:value="${location.id}"
+                                    th:text="${location.name}"
+                                    th:selected="${location.id == pickUp}"
+                            >
+                            </option>
+                        </select>
+                        <select name="dropOff" id="dropOff" class="form-control mr-3">
+                            <option value="">Điểm trả</option>
+                            <option th:each="location : ${locations}"
+                                    th:value="${location.id}"
+                                    th:text="${location.name}"
+                                    th:selected="${location.id == dropOff}"
+                            >
+                            </option>
+                        </select>
+                        <input th:value="${company}"
+                               name="company"
+                               type="text"
+                               class="form-control mr-3"
+                               style="width: 200px;"
+                               placeholder="Tìm kiếm theo nhà xe">
+                        <button type="submit" class="btn btn-primary" style="white-space: nowrap;">Tìm kiếm</button>
+                    </form>
                 </div>
 
                 <div
@@ -91,19 +118,20 @@
                     <ul class="pagination mb-0">
 
                         <li class="page-item">
-                            <a th:href="@{/admin/trips(currentPage=${currentPage -1})}"
+                            <a th:href="@{/admin/trips(currentPage=${currentPage -1}, pickUp=${pickUp}, dropOff=${dropOff}, company=${company})}"
                                class="page-link">Trang trước</a>
                         </li>
 
                         <li th:each=" i : ${#numbers.sequence(1, totalPages)}"
                             th:classappend="${currentPage == i ? 'active' : ''}"
                             class="page-item">
-                            <a class="page-link" th:text="${i}"></a>
+                            <a th:href="@{/admin/trips(currentPage=${i}, pickUp=${pickUp}, dropOff=${dropOff}, company=${company})}"
+                               class="page-link" th:text="${i}"></a>
                         </li>
 
 
                         <li class="page-item">
-                            <a th:href="@{/admin/trips(currentPage=${currentPage+1})}"
+                            <a th:href="@{/admin/trips(currentPage=${currentPage+1}, pickUp=${pickUp}, dropOff=${dropOff}, company=${company})}"
                                class="page-link">Trang sau</a>
                         </li>
 
@@ -118,6 +146,16 @@
     </div>
 
 </div>
+<script>
+    function submitForm() {
+        const pickUp = document.getElementById('pickUp').value;
+        const dropOff = document.getElementById('dropOff').value;
+        if (pickUp === dropOff && pickUp !== "" && dropOff !== "") {
+            alert("Điểm đón và điểm trả không được trùng nhau")
+            return false;
+        }
+    }
+</script>
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"

@@ -29,6 +29,7 @@ public class AdminController {
     private final SeatService seatService;
     private final TicketService ticketService;
     private final UserService userService;
+    private final LocationService locationService;
 
     @GetMapping({"", "/dashboard"})
 
@@ -172,18 +173,32 @@ public class AdminController {
     @GetMapping("/trips")
     public String trips(
             Model model,
-            @RequestParam(value = "currentPage", defaultValue = "1") Integer currentPage
+            @RequestParam(name = "currentPage", defaultValue = "1") Integer currentPage,
+            @RequestParam(name = "pickUp", required = false) Long pickUp,
+            @RequestParam(name = "dropOff", required = false) Long dropOff,
+            @RequestParam(name = "company", defaultValue = "") String company
     ) {
+        if (company == null) company = "";
         if (currentPage <= 0) {
-            return "redirect:/admin/trips?currentPage=1";
+            return "redirect:/admin/trips?currentPage=1"
+                    + (pickUp != null ? "&pickUp=" + pickUp : "")
+                    + (dropOff != null ? "&dropOff=" + dropOff : "")
+                    + "&company=" + company;
         }
-//        Page<Trip> trips = tripService.findAll(currentPage, 5);
-//        if (trips.getTotalPages() > 0 && currentPage > trips.getTotalPages()) {
-//            return "redirect:/admin/trips?currentPage=" + trips.getTotalPages();
-//        }
-//        model.addAttribute("trips", trips.getContent());
-//        model.addAttribute("currentPage", currentPage);
-//        model.addAttribute("totalPages", trips.getTotalPages());
+        Page<Trip> trips = tripService.findAll(pickUp, dropOff, company, currentPage, 5);
+        if (trips.getTotalPages() > 0 && currentPage > trips.getTotalPages()) {
+            return "redirect:/admin/trips?currentPage=" + trips.getTotalPages()
+                    + (pickUp != null ? "&pickUp=" + pickUp : "")
+                    + (dropOff != null ? "&dropOff=" + dropOff : "")
+                    + "&company=" + company;
+        }
+        model.addAttribute("trips", trips.getContent());
+        model.addAttribute("currentPage", currentPage);
+        model.addAttribute("totalPages", trips.getTotalPages());
+        model.addAttribute("locations", locationService.findAll());
+        model.addAttribute("company", company);
+        model.addAttribute("pickUp", pickUp);
+        model.addAttribute("dropOff", dropOff);
         return "admin/admin-trips";
     }
 

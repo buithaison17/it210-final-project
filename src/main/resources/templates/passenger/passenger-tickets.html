@@ -33,10 +33,14 @@
 
                     <h6 style="margin:0;">Danh sách vé của bạn</h6>
 
-                    <input type="text"
-                           class="form-control"
-                           placeholder="Tìm mã vé / tuyến xe..."
-                           style="width:250px; border-radius:20px;">
+                    <form th:action="@{/tickets}" method="get">
+                        <input type="text"
+                               name="search"
+                               th:value="${search}"
+                               class="form-control"
+                               placeholder="Tìm mã vé"
+                               style="width:250px; border-radius:20px;">
+                    </form>
 
                 </div>
 
@@ -50,7 +54,7 @@
                 <table th:if="${!tickets.isEmpty()}" class="table table-hover align-middle">
                     <thead style="background:#f8f9fa;">
                     <tr>
-                        <th>STT</th>
+                        <th>Mã vé</th>
                         <th>Nhà xe</th>
                         <th>Tuyến xe</th>
                         <th>Giờ khởi hành</th>
@@ -63,7 +67,7 @@
                     <tbody>
 
                     <tr th:each="ticket, stat : ${tickets}">
-                        <td th:text="${stat.index+1}"></td>
+                        <td th:text="${ticket.id}"></td>
                         <td th:text="${ticket.trip.bus.company}"></td>
                         <td th:text="${ticket.trip.route.origin.name + ' - ' + ticket.trip.route.destination.name}"></td>
                         <td th:text="${#temporals.format(ticket.trip.startTime, 'HH:mm dd/MM/yyyy')}"></td>
@@ -107,15 +111,15 @@
 
                     <ul class="pagination mb-0">
                         <li class="page-item">
-                            <a th:href="@{/tickets(currentPage=${currentPage -1})}" class="page-link">Trang trước</a>
+                            <a th:href="@{/tickets(currentPage=${currentPage -1}, search=${search})}" class="page-link">Trang trước</a>
                         </li>
                         <li th:each="i : ${#numbers.sequence(1, totalPages)}"
                             th:classappend="${currentPage == i ? 'active' : ''}"
                             class="page-item">
-                            <a th:href="@{/tickets(currentPage=${i})}" class="page-link" th:text="${i}"></a>
+                            <a th:href="@{/tickets(currentPage=${i}, search=${search})}" class="page-link" th:text="${i}"></a>
                         </li>
                         <li class="page-item">
-                            <a th:href="@{/tickets(currentPage=${currentPage+1})}" class="page-link">Trang sau</a>
+                            <a th:href="@{/tickets(currentPage=${currentPage+1}, search=${search})}" class="page-link">Trang sau</a>
                         </li>
                     </ul>
 

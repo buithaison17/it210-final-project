@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +22,20 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
             where t.id = :id
             """)
     Page<Ticket> searchById(@Param("id") Long id, Pageable pageable);
+
+    @Query("""
+            select t from Ticket t
+            where t.user = :user
+            and (:id is null or t.id = :id)
+            """)
+    Page<Ticket> findByUserAndId(@Param("user") User user, @Param("id") Long id, Pageable pageable);
+
+    @Query("""
+            select t from Ticket t
+            where t.status = PENDING
+            and t.createdAt <= :deadline
+            """)
+    List<Ticket> findExpiredTickets(@Param("deadline") LocalDateTime deadline);
 
     Page<Ticket> findByUser(User user, Pageable pageable);
 
