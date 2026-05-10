@@ -11,16 +11,8 @@
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
 <body>
-<div th:fragment="staff-sidebar" style="width:240px; min-height: 100vh; background:#1e293b; color:white; padding:20px;">
-    <h4 style="font-weight:bold; margin-bottom:30px;">Staff Bus System</h4>
-    <ul style="list-style:none; padding:0;">
-        <li style="margin-bottom:15px;">
-            <a th:href="@{/staff/tickets}" style="color:white; text-decoration:none;">🎫 Vé chờ thanh toán</a>
-        </li>
-        <li style="margin-bottom:15px;">
-            <a th:href="@{/staff/my-profile}" style="color:#cbd5f5; text-decoration:none;">👤 Thông tin cá nhân</a>
-        </li>
-    </ul>
+<div th:fragment="not-empty">
+    <p style="text-align:center; font-size:1.5rem; font-weight:600;">Danh sách trống</p>
 </div>
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->

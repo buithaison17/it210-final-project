@@ -5,10 +5,7 @@ import com.example.it210finalproject.enums.TicketStatus;
 import com.example.it210finalproject.model.dto.BusDTO;
 import com.example.it210finalproject.model.dto.EditProfileForm;
 import com.example.it210finalproject.model.dto.TripDTO;
-import com.example.it210finalproject.model.entity.Bus;
-import com.example.it210finalproject.model.entity.Route;
-import com.example.it210finalproject.model.entity.Trip;
-import com.example.it210finalproject.model.entity.User;
+import com.example.it210finalproject.model.entity.*;
 import com.example.it210finalproject.service.*;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -20,7 +17,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.sql.SQLException;
 import java.util.List;
 
 @Controller
@@ -57,7 +53,21 @@ public class AdminController {
     }
 
     @GetMapping("/tickets")
-    public String tickets() {
+    public String tickets(
+            Model model,
+            @RequestParam(name = "currentPage", defaultValue = "1") Integer currentPage,
+            @RequestParam(name = "search", defaultValue = "") Long keyword
+    ) {
+        if (currentPage <= 0) {
+            return "redirect:/admin/tickets?currentPage=1";
+        }
+        Page<Ticket> tickets = ticketService.findAll(keyword, currentPage, 5);
+        if (tickets.getTotalPages() > 0 && currentPage > tickets.getTotalPages())
+            return "redirect:/admin/tickets?currentPage=" + tickets.getTotalPages();
+        model.addAttribute("tickets", tickets.getContent());
+        model.addAttribute("totalPages", tickets.getTotalPages());
+        model.addAttribute("currentPage", currentPage);
+        model.addAttribute("search", keyword);
         return "admin/admin-tickets";
     }
 
@@ -102,7 +112,6 @@ public class AdminController {
             @Valid @ModelAttribute("bus") BusDTO busDTO,
             BindingResult bindingResult,
             RedirectAttributes redirectAttributes,
-            Model model,
             @RequestParam(value = "id", required = false) Long id
     ) {
         if (bindingResult.hasErrors()) {
@@ -110,15 +119,11 @@ public class AdminController {
         }
 
         if (id == null) {
-            try {
-                busService.addBus(busDTO);
-                redirectAttributes.addFlashAttribute("success", "Xe bus đã được thêm thành công");
-            } catch (SQLException e) {
-                model.addAttribute("addBusError", "Lỗi khi tạo xe vui lòng thử lại");
-                return "admin/admin-bus-form";
-            }
+            busService.addBus(busDTO);
+            redirectAttributes.addFlashAttribute("success", "Xe bus đã được thêm thành công");
         } else {
             busService.updateBus(id, busDTO);
+            redirectAttributes.addFlashAttribute("success", "Xe bus đã được sửa thành công");
         }
         return "redirect:/admin/buses";
     }
@@ -172,13 +177,13 @@ public class AdminController {
         if (currentPage <= 0) {
             return "redirect:/admin/trips?currentPage=1";
         }
-        Page<Trip> trips = tripService.findAll(currentPage, 5);
-        if (trips.getTotalPages() > 0 && currentPage > trips.getTotalPages()) {
-            return "redirect:/admin/trips?currentPage=" + trips.getTotalPages();
-        }
-        model.addAttribute("trips", trips.getContent());
-        model.addAttribute("currentPage", currentPage);
-        model.addAttribute("totalPages", trips.getTotalPages());
+//        Page<Trip> trips = tripService.findAll(currentPage, 5);
+//        if (trips.getTotalPages() > 0 && currentPage > trips.getTotalPages()) {
+//            return "redirect:/admin/trips?currentPage=" + trips.getTotalPages();
+//        }
+//        model.addAttribute("trips", trips.getContent());
+//        model.addAttribute("currentPage", currentPage);
+//        model.addAttribute("totalPages", trips.getTotalPages());
         return "admin/admin-trips";
     }
 
@@ -237,14 +242,14 @@ public class AdminController {
         // Kiểm tra chuyến có ghế nào đã được đặt chưa
         Trip trip = tripService.findById(id);
         // Ghế đã thanh toán
-        boolean seatBooked = seatService.existsByTripIdAndStatus(trip.getBus().getId(), SeatStatus.BOOKED);
+        boolean seatBooked = seatService.existsByTripIdAndStatus(trip.getId(), SeatStatus.BOOKED);
         // Ghế chưa thanh toán
-        boolean seatPending = seatService.existsByTripIdAndStatus(trip.getBus().getId(), SeatStatus.PENDING);
-        if (seatBooked && seatPending) {
+        boolean seatPending = seatService.existsByTripIdAndStatus(trip.getId(), SeatStatus.PENDING);
+        if (seatBooked || seatPending) {
             redirectAttributes.addFlashAttribute("error", "Xe bus có ghế đã được đặt, không thể xoá");
             return "redirect:/admin/trips";
         }
-        tripService.deleteById(id);
+        tripService.deleteTrip(id);
         redirectAttributes.addFlashAttribute("success", "Xoá chuyến xe thành công");
         return "redirect:/admin/trips";
     }

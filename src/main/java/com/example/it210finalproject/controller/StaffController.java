@@ -25,15 +25,17 @@ public class StaffController {
     @GetMapping({"", "/tickets"})
     public String tickets(
             Model model,
-            @RequestParam(value = "currentPage", defaultValue = "1") Integer currentPage
+            @RequestParam(name = "search", defaultValue = "") Long keyword,
+            @RequestParam(name = "currentPage", defaultValue = "1") Integer currentPage
     ) {
         if (currentPage <= 0) return "redirect:/staff/tickets?currentPage=1";
-        Page<Ticket> tickets = ticketService.findAll(currentPage, 5);
+        Page<Ticket> tickets = ticketService.findAll(keyword, currentPage, 5);
         if (tickets.getTotalPages() > 0 && currentPage > tickets.getTotalPages())
             return "redirect:/staff/tickets?currentPage=" + tickets.getTotalPages();
         model.addAttribute("tickets", tickets.getContent());
         model.addAttribute("totalPages", tickets.getTotalPages());
         model.addAttribute("currentPage", currentPage);
+        model.addAttribute("search", keyword);
         return "staff/staff-tickets";
     }
 

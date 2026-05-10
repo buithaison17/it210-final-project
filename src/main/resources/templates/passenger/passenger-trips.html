@@ -31,17 +31,53 @@
                 <!-- FILTER -->
                 <div class="d-flex justify-content-between align-items-center mb-3">
 
-                    <h6 style="margin:0;">Chuyến xe khả dụng</h6>
+                    <h6 class="mb-0">Chuyến xe khả dụng</h6>
 
-                    <input type="text"
-                           class="form-control"
-                           placeholder="Tìm tuyến, bến xe..."
-                           style="width:250px; border-radius:20px;">
+                    <form th:action="@{/trips(currentPage=${currentPage})}" method="get" onsubmit="return submitForm()"
+                          class="d-flex align-items-center gap-2">
+
+                        <select name="pickUp" id="pickup"
+                                class="form-control mr-3">
+                            <option value="">Điểm đón</option>
+                            <option th:each="location: ${locations}"
+                                    th:value="${location.id}"
+                                    th:selected="${pickUp == location.id}"
+                                    th:text="${location.name}"></option>
+                        </select>
+
+                        <select name="dropOff" id="dropoff"
+                                th:value="${dropOff}"
+                                class="form-control mr-3">
+                            <option value="">Điểm trả</option>
+                            <option th:each="location: ${locations}"
+                                    th:value="${location.id}"
+                                    th:selected="${dropOff==location.id}"
+                                    th:text="${location.name}"></option>
+                        </select>
+
+                        <input type="text"
+                               th:value="${company}"
+                               name="company"
+                               class="form-control mr-3"
+                               placeholder="Tìm theo nhà xe..."
+                               style="width:180px;">
+
+                        <button type="submit"
+                                class="btn btn-primary"
+                                style="white-space: nowrap;">
+                            Tìm kiếm
+                        </button>
+
+                    </form>
 
                 </div>
 
+                <div th:if="${trips.isEmpty()}">
+                    <div th:replace="fragments/not-empty"></div>
+                </div>
+
                 <!-- TABLE -->
-                <table class="table table-hover align-middle">
+                <table th:if="${!trips.isEmpty()}" class="table table-hover align-middle">
                     <thead style="background:#f8f9fa;">
                     <tr>
                         <th>STT</th>
@@ -77,21 +113,25 @@
                 </table>
 
                 <!-- PAGINATION -->
-                <div class="d-flex justify-content-end align-items-center mt-3">
-
+                <div th:if="${totalPages >= 1}" class="d-flex justify-content-end align-items-center mt-3">
 
                     <ul class="pagination mb-0">
                         <li class="page-item">
-                            <a th:href="@{/trips(currentPage=${currentPage - 1})}" class="page-link">Trang trước</a>
+                            <a
+                                    th:href="@{/trips(currentPage=${currentPage - 1}, pickUp=${pickUp}, dropOff=${dropOff}, company=${company})}"
+                                    class="page-link">Trang trước
+                            </a>
                         </li>
 
                         <li class="page-item" th:classappend="${currentPage == i ? 'active' : ''}"
                             th:each="i : ${#numbers.sequence(1, totalPages)}">
-                            <a th:href="@{/trips(currentPage=${i})}" class="page-link" th:text="${i}"></a>
+                            <a th:href="@{/trips(currentPage=${i}, pickUp=${pickUp}, dropOff=${dropOff}, company=${company})}"
+                               class="page-link" th:text="${i}"></a>
                         </li>
 
                         <li class="page-item">
-                            <a th:href="@{/trips(currentPage=${currentPage + 1})}" class="page-link">Trang sau</a>
+                            <a th:href="@{/trips(currentPage=${currentPage + 1}, pickUp=${pickUp}, dropOff=${dropOff}, company=${company})}"
+                               class="page-link">Trang sau</a>
                         </li>
                     </ul>
 
@@ -105,6 +145,16 @@
 </div>
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script>
+    function submitForm() {
+        const pickup = document.getElementById('pickup').value;
+        const dropoff = document.getElementById('dropoff').value;
+        if (pickup === dropoff && pickup !== '' && dropoff !== '') {
+            alert('Điểm đón và điểm trả không được trùng nhau');
+            return false;
+        }
+    }
+</script>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
         crossorigin="anonymous"></script>

@@ -64,10 +64,10 @@ public class TripService {
         tripRepository.save(data);
     }
 
-    public Page<Trip> findAll(Integer currentPage, Integer perPage) {
+    public Page<Trip> findAll(Long pickUp, Long dropOff, String company, Integer currentPage, Integer perPage) {
         // Phân trang giảm dần theo thời gian tạo
         Pageable pageable = PageRequest.of(currentPage - 1, perPage, Sort.by("createdAt").descending());
-        return tripRepository.findAll(pageable);
+        return tripRepository.searchTrips(pickUp, dropOff, company, pageable);
     }
 
     public Trip findById(Long id) {
@@ -82,7 +82,9 @@ public class TripService {
         return tripRepository.existsByBusId(busId);
     }
 
-    public void deleteById(Long id) {
+    @Transactional
+    public void deleteTrip(Long id) {
+        seatRepository.deleteByTripId(id);
         tripRepository.deleteById(id);
     }
 

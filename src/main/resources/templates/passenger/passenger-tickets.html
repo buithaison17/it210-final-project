@@ -42,8 +42,12 @@
 
                 <div th:if="${success}" th:text="${success}" class="alert alert-success text-center"></div>
 
+                <div th:if="${tickets.isEmpty()}">
+                    <div th:replace="fragments/not-empty"></div>
+                </div>
+
                 <!-- TABLE -->
-                <table class="table table-hover align-middle">
+                <table th:if="${!tickets.isEmpty()}" class="table table-hover align-middle">
                     <thead style="background:#f8f9fa;">
                     <tr>
                         <th>STT</th>
@@ -95,46 +99,11 @@
                             </a>
                         </td>
                     </tr>
-
-                    <!--                    <tr>-->
-                    <!--                        <td>TK002</td>-->
-                    <!--                        <td>Hà Nội → Đà Nẵng</td>-->
-                    <!--                        <td>20:30 06/05/2026</td>-->
-                    <!--                        <td>450.000đ</td>-->
-                    <!--                        <td>-->
-                    <!--                            <span class="badge bg-warning text-dark">Chờ thanh toán</span>-->
-                    <!--                        </td>-->
-                    <!--                        <td style="text-align:center;">-->
-                    <!--                            <button class="btn btn-sm btn-success" style="border-radius:15px;">-->
-                    <!--                                Thanh toán-->
-                    <!--                            </button>-->
-                    <!--                            <button class="btn btn-sm btn-outline-danger" style="border-radius:15px;">-->
-                    <!--                                Hủy vé-->
-                    <!--                            </button>-->
-                    <!--                        </td>-->
-                    <!--                    </tr>-->
-
-                    <!--                    <tr>-->
-                    <!--                        <td>TK003</td>-->
-                    <!--                        <td>Hà Nội → Nam Định</td>-->
-                    <!--                        <td>14:00 06/05/2026</td>-->
-                    <!--                        <td>80.000đ</td>-->
-                    <!--                        <td>-->
-                    <!--                            <span class="badge bg-secondary">Đã huỷ</span>-->
-                    <!--                        </td>-->
-                    <!--                        <td style="text-align:center;">-->
-                    <!--                            <button class="btn btn-sm btn-outline-primary" style="border-radius:15px;">-->
-                    <!--                                Xem lại-->
-                    <!--                            </button>-->
-                    <!--                        </td>-->
-                    <!--                    </tr>-->
-
                     </tbody>
                 </table>
 
                 <!-- PAGINATION -->
-                <div class="d-flex justify-content-end align-items-center mt-3">
-
+                <div th:if="${totalPages >= 1}" class="d-flex justify-content-end align-items-center mt-3">
 
                     <ul class="pagination mb-0">
                         <li class="page-item">

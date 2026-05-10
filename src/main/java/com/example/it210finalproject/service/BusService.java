@@ -51,7 +51,7 @@ public class BusService {
     }
 
     @Transactional
-    public void addBus(BusDTO busDTO) throws SQLException {
+    public void addBus(BusDTO busDTO) {
         // Thêm xe bus
         Bus bus = mapToBus(busDTO);
         busRepository.save(bus);

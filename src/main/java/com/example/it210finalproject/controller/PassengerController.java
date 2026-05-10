@@ -4,6 +4,7 @@ import com.example.it210finalproject.enums.SeatStatus;
 import com.example.it210finalproject.enums.TicketStatus;
 import com.example.it210finalproject.model.dto.EditProfileForm;
 import com.example.it210finalproject.model.entity.*;
+import com.example.it210finalproject.service.LocationService;
 import com.example.it210finalproject.service.SeatService;
 import com.example.it210finalproject.service.TicketService;
 import com.example.it210finalproject.service.TripService;
@@ -29,19 +30,37 @@ public class PassengerController {
     private final TripService tripService;
     private final SeatService seatService;
     private final TicketService ticketService;
+    private final LocationService locationService;
 
     @GetMapping({"", "/", "/trips"})
     public String trips(
             Model model,
-            @RequestParam(value = "currentPage", defaultValue = "1") Integer currentPage
+            @RequestParam(name = "currentPage", defaultValue = "1") Integer currentPage,
+            @RequestParam(name = "pickUp", required = false) Long pickUp,
+            @RequestParam(name = "dropOff", required = false) Long dropOff,
+            @RequestParam(name = "company", defaultValue = "") String company
     ) {
-        if (currentPage <= 0) return "redirect:/trips?currentPage=1";
-        Page<Trip> trips = tripService.findAll(currentPage, 5);
+        String s = company != null && !company.isBlank()
+                ? "&company=" + company
+                : "";
+        if (currentPage <= 0)
+            return "redirect:/trips?currentPage=1"
+                    + (pickUp != null ? "&pickUp=" + pickUp : "")
+                    + (dropOff != null ? "&dropOff=" + dropOff : "")
+                    + s;
+        Page<Trip> trips = tripService.findAll(pickUp, dropOff, company, currentPage, 5);
         if (trips.getTotalPages() > 0 && currentPage > trips.getTotalPages())
-            return "redirect:/trips?currentPage=" + trips.getTotalPages();
+            return "redirect:/trips?currentPage=" + trips.getTotalPages()
+                    + (pickUp != null ? "&pickUp=" + pickUp : "")
+                    + (dropOff != null ? "&dropOff=" + dropOff : "")
+                    + s;
         model.addAttribute("trips", trips.getContent());
         model.addAttribute("totalPages", trips.getTotalPages());
         model.addAttribute("currentPage", currentPage);
+        model.addAttribute("pickUp", pickUp);
+        model.addAttribute("dropOff", dropOff);
+        model.addAttribute("company", company);
+        model.addAttribute("locations", locationService.findAll());
         // Lấy số lượng ghế còn trống của từng xe
         List<Integer> seats = new ArrayList<>();
         for (Trip trip : trips.getContent()) {

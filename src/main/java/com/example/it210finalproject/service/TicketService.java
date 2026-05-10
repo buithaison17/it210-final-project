@@ -29,12 +29,6 @@ public class TicketService {
     private final SeatRepository seatRepository;
     private final SeatService seatService;
 
-    @Transactional
-    public void saveAll(List<Ticket> tickets, List<Seat> seats) {
-        ticketRepository.saveAll(tickets);
-        seatRepository.saveAll(seats);
-    }
-
     public Ticket findById(Long id) {
         return ticketRepository.findById(id).orElse(null);
     }
@@ -44,9 +38,12 @@ public class TicketService {
         return ticketRepository.findByUser(user, pageable);
     }
 
-    public Page<Ticket> findAll(Integer currentPage, Integer perPage) {
+    public Page<Ticket> findAll(Long keyword, Integer currentPage, Integer perPage) {
         Pageable pageable = PageRequest.of(currentPage - 1, perPage, Sort.by("createdAt").descending());
-        return ticketRepository.findAll(pageable);
+        if (keyword == null) {
+            return ticketRepository.findAll(pageable);
+        }
+        return ticketRepository.searchById(keyword, pageable);
     }
 
     public Page<Ticket> findByStatus(Integer currentPage, Integer perPage, TicketStatus ticketStatus) {
