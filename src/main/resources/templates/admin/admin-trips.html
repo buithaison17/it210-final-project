@@ -11,7 +11,7 @@
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
 <body>
-<div class="d-flex" style="min-height:100vh; background:#eef2f7;">
+<div class="d-flex" style="background:#eef2f7;">
 
     <!-- SIDEBAR -->
     <div th:replace="fragments/admin-sidebar"></div>
@@ -29,10 +29,6 @@
 
                 <!-- HEADER ACTION -->
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <a th:href="@{/admin/add-trip}" class="btn btn-primary" style="border-radius:20px;">
-                        + Thêm chuyến xe
-                    </a>
-
                     <form th:action="@{/admin/trips}" onsubmit="return submitForm()" method="get"
                           class="d-flex align-items-center">
                         <select name="pickUp" id="pickUp" class="form-control mr-3">
@@ -61,6 +57,10 @@
                                placeholder="Tìm kiếm theo nhà xe">
                         <button type="submit" class="btn btn-primary" style="white-space: nowrap;">Tìm kiếm</button>
                     </form>
+
+                    <a th:href="@{/admin/add-trip}" class="btn btn-primary" style="border-radius:20px;">
+                        + Thêm chuyến xe
+                    </a>
                 </div>
 
                 <div

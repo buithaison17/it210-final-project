@@ -1,7 +1,9 @@
 package com.example.it210finalproject.model.dto;
 
 import com.example.it210finalproject.validation.StartTimeDuplicate;
+import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Positive;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -24,6 +26,7 @@ public class TripDTO {
     @Positive(message = "Giá vé không hợp lệ")
     private Double price;
     @NotNull(message = "Thời gian khởi hành không được trống")
+    @Future(message = "Thời gian bắt đầu không hợp lệ")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime startTime;
 }
