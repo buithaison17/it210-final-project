@@ -61,7 +61,7 @@ public class PassengerController {
         // Lấy số lượng ghế còn trống của từng xe
         List<Integer> seats = new ArrayList<>();
         for (Trip trip : trips.getContent()) {
-            seats.add(seatService.countSeatByStatus(trip.getBus().getId(), SeatStatus.AVAILABLE));
+            seats.add(seatService.countSeatByStatus(trip.getId(), SeatStatus.AVAILABLE));
         }
         model.addAttribute("seats", seats);
         return "passenger/passenger-trips";
@@ -101,7 +101,7 @@ public class PassengerController {
             redirectAttributes.addFlashAttribute("error", "Chuyến đi đã diễn ra");
             return "redirect:/trips";
         }
-        List<Seat> seats = seatService.findByBusId(trip.getBus().getId());
+        List<Seat> seats = seatService.findByTripId(trip.getId());
         model.addAttribute("trip", trip);
         model.addAttribute("seats", seats);
         return "passenger/passenger-seats";

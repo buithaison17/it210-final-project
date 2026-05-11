@@ -16,12 +16,12 @@ public class SeatService {
         this.seatRepository = seatRepository;
     }
 
-    public int countSeatByStatus(Long busId, SeatStatus seatStatus) {
-        return seatRepository.countByBusIdAndStatus(busId, seatStatus);
+    public int countSeatByStatus(Long tripId, SeatStatus seatStatus) {
+        return seatRepository.countByTripIdAndStatus(tripId, seatStatus);
     }
 
-    public List<Seat> findByBusId(Long busId) {
-        return seatRepository.findByBusId(busId);
+    public List<Seat> findByTripId(Long tripId) {
+        return seatRepository.findByTripId(tripId);
     }
 
     public List<Seat> findAllById(List<Long> ids) {

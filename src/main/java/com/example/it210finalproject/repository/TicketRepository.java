@@ -33,7 +33,7 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     @Query("""
             select t from Ticket t
             where t.status = PENDING
-            and t.createdAt <= :deadline
+            and t.trip.startTime <= :deadline
             """)
     List<Ticket> findExpiredTickets(@Param("deadline") LocalDateTime deadline);
 

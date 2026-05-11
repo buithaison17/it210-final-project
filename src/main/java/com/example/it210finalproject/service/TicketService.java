@@ -23,6 +23,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,7 +33,6 @@ public class TicketService {
     private final SeatRepository seatRepository;
     private final SeatService seatService;
     private final EmailService emailService;
-    private final HttpSession session;
 
     public Ticket findById(Long id) {
         return ticketRepository.findById(id).orElse(null);
@@ -67,14 +67,11 @@ public class TicketService {
                 .build();
     }
 
-    @Transactional
-    public void bookTicket(User user, Trip trip, List<Seat> seats, String methodPayment) {
-        // Email template
-        String seatNames = seats.stream().map(Seat::getSeatNumber).collect(Collectors.joining(", "));
-        String content = """
+    private String emailBookTicketTemplate(String ticketIds, Trip trip, String seatNames, String methodPayment) {
+        return """
                 Cảm ở bạn đã sử dụng dịch vụ của Bus Ticket Pro
                     Thông tin chuyến đi
-                    - Mã vé: %d
+                    - Mã vé: %s
                     - Nhà xe: %s
                     - Tuyến đường: %s - %s
                     - Thời gian gian khởi hành: %s
@@ -87,7 +84,7 @@ public class TicketService {
                 Xin trân trọng cảm ơn.
                 Chúc bạn có một chuyến an toàn bên gia đình và người thân.
                 """.formatted(
-                trip.getId(),
+                ticketIds,
                 trip.getBus().getCompany(),
                 trip.getRoute().getOrigin().getName(),
                 trip.getRoute().getDestination().getName(),
@@ -96,6 +93,10 @@ public class TicketService {
                 trip.getPrice(),
                 methodPayment.equals("cash") ? "Thanh toán tại quầy" : "Chuyển khoản"
         );
+    }
+
+    @Transactional
+    public void bookTicket(User user, Trip trip, List<Seat> seats, String methodPayment) {
 
         // Thanh toán tiền mặt
         List<Ticket> tickets = new ArrayList<>();
@@ -115,8 +116,11 @@ public class TicketService {
             });
         }
 
-        ticketRepository.saveAll(tickets);
+        List<Ticket> list = ticketRepository.saveAll(tickets);
         seatRepository.saveAll(seats);
+        String ticketIds = list.stream().map(t -> String.valueOf(t.getId())).collect(Collectors.joining(", "));
+        String seatNames = seats.stream().map(Seat::getSeatNumber).collect(Collectors.joining(", "));
+        String content = emailBookTicketTemplate(ticketIds, trip, seatNames, methodPayment);
         emailService.sendEmail(user.getEmail(), "Đặt vé thành công", content);
     }
 

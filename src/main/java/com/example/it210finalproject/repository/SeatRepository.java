@@ -10,9 +10,9 @@ import java.util.List;
 
 @Repository
 public interface SeatRepository extends JpaRepository<Seat, Long> {
-    int countByBusIdAndStatus(Long busId, SeatStatus status);
+    int countByTripIdAndStatus(Long tripId, SeatStatus status);
 
-    List<Seat> findByBusId(Long busId);
+    List<Seat> findByTripId(Long tripId);
 
     void deleteByBusId(Long busId);
 
