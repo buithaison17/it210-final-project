@@ -56,4 +56,6 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
             order by count(t) desc
             """)
     List<Top5User> getTop5Users(Pageable pageable);
+
+    boolean existsTicketByTripId(Long tripId);
 }

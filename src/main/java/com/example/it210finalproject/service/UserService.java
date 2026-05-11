@@ -67,7 +67,7 @@ public class UserService {
         return userRepository.findByPhone(phone);
     }
 
-    public long countAll() {
-        return userRepository.count();
+    public long countByRole(Role role) {
+        return userRepository.countByRole(role);
     }
 }

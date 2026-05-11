@@ -3,18 +3,18 @@ package com.example.it210finalproject.service;
 import com.example.it210finalproject.enums.SeatStatus;
 import com.example.it210finalproject.model.entity.Seat;
 import com.example.it210finalproject.repository.SeatRepository;
+import com.example.it210finalproject.repository.TicketRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 
 @Service
+@AllArgsConstructor
 public class SeatService {
     private final SeatRepository seatRepository;
-
-    public SeatService(SeatRepository seatRepository) {
-        this.seatRepository = seatRepository;
-    }
+    private final TicketRepository ticketRepository;
 
     public int countSeatByStatus(Long tripId, SeatStatus seatStatus) {
         return seatRepository.countByTripIdAndStatus(tripId, seatStatus);
@@ -32,7 +32,7 @@ public class SeatService {
         seatRepository.save(seat);
     }
 
-    public boolean existsByTripIdAndStatus(Long tripId, SeatStatus seatStatus) {
-        return seatRepository.existsByTripIdAndStatus(tripId, seatStatus);
+    public boolean existsTicketByTripId(Long tripId) {
+        return ticketRepository.existsTicketByTripId(tripId);
     }
 }

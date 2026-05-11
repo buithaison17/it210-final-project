@@ -1,12 +1,11 @@
 #
 Tạo dữ liệu mẫu
+
 use it210_final_project;
-
-
 -- 3 data admin, staff, user
 -- password: sonbui123
 insert into users(balance, email, full_name, password, phone, role)
-VALUES (10000000, 'admin1@gmail.com', 'Admin 1',
+VALUES (10000000, 'sonbui@admin.com', 'Son Bui',
         '$2a$08$dzoKiWRP3EX558E1gipYhOjSnuacGI8yzEEfyCNN6TdaMAaRBuRau',
         '0124567890', 'admin'),
        (5000000, 'staff1@gmail.com', 'Staff 1',

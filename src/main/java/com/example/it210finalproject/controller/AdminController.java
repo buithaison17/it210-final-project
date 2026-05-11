@@ -1,5 +1,6 @@
 package com.example.it210finalproject.controller;
 
+import com.example.it210finalproject.enums.Role;
 import com.example.it210finalproject.enums.SeatStatus;
 import com.example.it210finalproject.enums.TicketStatus;
 import com.example.it210finalproject.model.dto.BusDTO;
@@ -37,7 +38,7 @@ public class AdminController {
         model.addAttribute("revenue", ticketService.getRevenue());
         model.addAttribute("totalTicketPaid", ticketService.countByStatus(TicketStatus.PAID));
         model.addAttribute("totalRoutes", routeService.countAll());
-        model.addAttribute("totalUsers", userService.countAll());
+        model.addAttribute("totalUsers", userService.countByRole(Role.PASSENGER));
         model.addAttribute("top5Trips", tripService.top5Trip());
         model.addAttribute("top5Users", ticketService.getTop5Users());
         return "admin/admin-dashboard";
@@ -254,14 +255,10 @@ public class AdminController {
             @RequestParam("id") Long id,
             RedirectAttributes redirectAttributes
     ) {
-        // Kiểm tra chuyến có ghế nào đã được đặt chưa
-        Trip trip = tripService.findById(id);
-        // Ghế đã thanh toán
-        boolean seatBooked = seatService.existsByTripIdAndStatus(trip.getId(), SeatStatus.BOOKED);
-        // Ghế chưa thanh toán
-        boolean seatPending = seatService.existsByTripIdAndStatus(trip.getId(), SeatStatus.PENDING);
-        if (seatBooked || seatPending) {
-            redirectAttributes.addFlashAttribute("error", "Xe bus có ghế đã được đặt, không thể xoá");
+        // Kiểm tra xem chuyến đã có vé chưa
+        boolean existsTicket = seatService.existsTicketByTripId(id);
+        if (existsTicket) {
+            redirectAttributes.addFlashAttribute("error", "Chuyến xe đã có vé không thể xoá");
             return "redirect:/admin/trips";
         }
         tripService.deleteTrip(id);
